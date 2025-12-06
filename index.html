@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mundial de Fútbol</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Estilos para las cards de países */
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .country-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .country-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .country-card h3 {
+            padding: 1rem;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #2a5298;
+            color: white;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #1e3c72;
+        }
+        
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Mundial de Fútbol</h1>
+        <p>Explora los equipos nacionales y sus historias</p>
+    </header>
+    
+    <div class="container">
+        <h2>Selecciona un país</h2>
+        <div class="countries-grid" id="countries-grid">
+            <!-- Las cards de países se generarán dinámicamente con JavaScript -->
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 Mundial de Fútbol - Todos los derechos reservados</p>
+    </footer>
+    
+    <script>
+        // Lista de países
+        const countries = [
+            "Argentina", "Australia", "Brasil", "Canada", "Corea del Sur", 
+            "Ecuador", "Estados Unidos", "Iran", "Japon", "Jordania", 
+            "Mexico", "Nueva Zelanda", "Uzbekistan"
+        ];
+        
+        // Función para generar las cards de países
+        function generateCountryCards() {
+            const grid = document.getElementById('countries-grid');
+            
+            countries.forEach(country => {
+                // Crear la card
+                const card = document.createElement('div');
+                card.className = 'country-card';
+                
+                // Crear la imagen
+                const img = document.createElement('img');
+                img.src = `img/${country}.png`;
+                img.alt = `Bandera de ${country}`;
+                
+                // Crear el título
+                const title = document.createElement('h3');
+                title.textContent = country;
+                
+                // Crear el botón
+                const button = document.createElement('button');
+                button.className = 'btn';
+                button.textContent = 'Ver detalles';
+                button.addEventListener('click', () => {
+                    // Redirigir a la página del país
+                    window.location.href = `${country}.html`;
+                });
+                
+                // Ensamblar la card
+                card.appendChild(img);
+                card.appendChild(title);
+                card.appendChild(button);
+                
+                // Agregar la card al grid
+                grid.appendChild(card);
+            });
+        }
+        
+        // Ejecutar cuando la página cargue
+        document.addEventListener('DOMContentLoaded', generateCountryCards);
+    </script>
+</body>
+</html>

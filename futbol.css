@@ -1,0 +1,271 @@
+/* futbol.css - Estilos para la página de la Selección Mexicana de Fútbol */
+
+/* Variables de colores */
+:root {
+  --gris-oscuro: #2c3e50;
+  --gris-medio: #34495e;
+  --gris-claro: #7f8c8d;
+  --gris-muy-claro: #ecf0f1;
+  --verde-grisaceo: #3d5a5f;
+  --azul-grisaceo: #4a6572;
+  --acento: #3498db;
+  --blanco: #ffffff;
+  --sombra: rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos generales */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--gris-oscuro);
+  background: linear-gradient(135deg, var(--gris-muy-claro) 0%, var(--gris-claro) 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Encabezado */
+h1 {
+  text-align: center;
+  color: var(--gris-oscuro);
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px var(--sombra);
+  padding: 15px;
+  border-bottom: 3px solid var(--verde-grisaceo);
+}
+
+h2 {
+  color: var(--gris-medio);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--azul-grisaceo);
+}
+
+h3 {
+  color: var(--gris-medio);
+  margin: 15px 0 10px;
+}
+
+/* Contenedor principal */
+.contenido {
+  background-color: var(--blanco);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px var(--sombra);
+  padding: 25px;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+/* Botones principales */
+.botones {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.botones button {
+  background: linear-gradient(to bottom, var(--gris-medio), var(--gris-oscuro));
+  color: var(--blanco);
+  border: none;
+  padding: 12px 25px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px var(--sombra);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.botones button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 8px var(--sombra);
+  background: linear-gradient(to bottom, var(--azul-grisaceo), var(--gris-medio));
+}
+
+.botones button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px var(--sombra);
+}
+
+/* Contenido específico */
+/* Estadísticas e Historia */
+.contenido p {
+  margin-bottom: 15px;
+  line-height: 1.7;
+}
+
+.contenido ol {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+.contenido li {
+  margin-bottom: 8px;
+  padding-left: 5px;
+}
+
+.contenido strong {
+  color: var(--gris-oscuro);
+}
+
+/* Video */
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px var(--sombra);
+}
+
+.video-container video {
+  width: 100%;
+  display: block;
+  transition: filter 0.3s ease;
+}
+
+.filtros-video {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.filtros-video button {
+  background-color: var(--gris-claro);
+  color: var(--blanco);
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.filtros-video button:hover {
+  background-color: var(--azul-grisaceo);
+}
+
+/* Trivia */
+#formTrivia {
+  margin-bottom: 20px;
+}
+
+.pregunta {
+  background-color: var(--gris-muy-claro);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 4px solid var(--verde-grisaceo);
+}
+
+.pregunta p {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.pregunta div {
+  margin-bottom: 5px;
+}
+
+.pregunta input[type="radio"] {
+  margin-right: 8px;
+}
+
+#btnCalcular {
+  background: linear-gradient(to bottom, var(--verde-grisaceo), var(--gris-medio));
+  color: var(--blanco);
+  border: none;
+  padding: 12px 25px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px var(--sombra);
+  display: block;
+  margin: 20px auto 0;
+}
+
+#btnCalcular:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 8px var(--sombra);
+  background: linear-gradient(to bottom, var(--azul-grisaceo), var(--verde-grisaceo));
+}
+
+.resultado {
+  background-color: var(--gris-muy-claro);
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+  border-left: 4px solid var(--azul-grisaceo);
+}
+
+/* Modelo 3D */
+.contenido p:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .botones {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .botones button {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .contenido {
+    padding: 15px;
+  }
+  
+  .filtros-video {
+    flex-direction: column;
+  }
+  
+  .filtros-video button {
+    width: 100%;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contenido > * {
+  animation: fadeIn 0.5s ease;
+}

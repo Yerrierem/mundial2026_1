@@ -1,0 +1,244 @@
+:root {
+    --primary: #128bee;
+    --secondary: #0b37b0;
+    --accent: #0039FF;
+    --dark: #0096db;
+    --darker: #1367dc;
+    --light: #f5f7ff;
+    --text: #333;
+    --text-light: #fff;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --card-bg: #e0e6ff; 
+    --body-bg: #051467; 
+    --input-bg: #d9e0ff;
+    --form-bg: #e8edff;
+}
+
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--body-bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0;
+}
+
+/* Contenedor principal del perfil */
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Encabezado del perfil */
+.profile-header {
+    background: linear-gradient(to right, var(--primary), var(--darker));
+    color: var(--text-light);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--light);
+    box-shadow: var(--shadow);
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+}
+
+.profile-info p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+    color: var(--text-light);
+}
+
+/* Botones */
+.edit-profile-btn {
+    background-color: var(--secondary);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    margin-bottom: 1.5rem;
+}
+
+.edit-profile-btn:hover {
+    background-color: var(--dark);
+}
+
+/* Formulario de edición (oculto inicialmente) */
+.edit-form {
+    display: none;
+    background-color: var(--form-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.edit-form .image-preview-container {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.edit-image-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+}
+
+.file-input-label {
+    display: block;
+    background-color: var(--primary);
+    color: white;
+    padding: 0.6rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s;
+}
+
+.file-input-label:hover {
+    background-color: var(--dark);
+}
+
+#editProfileImage {
+    display: none;
+}
+
+#editUsername {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+#saveProfileBtn, #cancelEditBtn {
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    margin-right: 0.5rem;
+}
+
+#saveProfileBtn {
+    background-color: var(--primary);
+    color: white;
+}
+
+#saveProfileBtn:hover {
+    background-color: var(--dark);
+}
+
+#cancelEditBtn {
+    background-color: #ccc;
+    color: var(--text);
+}
+
+#cancelEditBtn:hover {
+    background-color: #aaa;
+}
+
+/* Estadísticas del perfil */
+.profile-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: var(--text-light);
+}
+
+/* Contenido del perfil */
+#profileContent {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--primary);
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--darker);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 1rem;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .profile-stats {
+        justify-content: center;
+    }
+    
+    .edit-form {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+    }
+}

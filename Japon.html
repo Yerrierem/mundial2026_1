@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de la Selección de Japón de Fútbol</title>
+        <link rel="stylesheet" href="futbol.css">
+</head>
+<body>
+    <h1>Información de la Selección de Japón</h1>
+    
+    <div class="botones">
+        <button id="btnEstadisticas">Estadísticas e Historia</button>
+        <button id="btnVideo">Ver Video</button>
+        <button id="btnTrivia">Jugar Trivia</button>
+        <button id="btnModelo3D">Modelo 3D</button>
+    </div>
+    
+    <div class="contenido" id="contenido">
+        <!-- Aquí se mostrará el contenido según el botón seleccionado -->
+        <p>Selecciona una opción para ver información sobre la selección de Japón de fútbol.</p>
+    </div>
+
+    <script>
+        // Datos de la selección de Japón
+        const datosEquipo = {
+            nombre: "Japón",
+            estadisticas: "La selección japonesa ha participado en 7 Copas del Mundo, alcanzando los octavos de final en tres ocasiones (2002, 2010 y 2018). Ha ganado 4 Copas Asiáticas y 2 Copas de Asia Oriental.",
+            historia: "La selección de fútbol de Japón es el equipo representativo del país en las competiciones oficiales. Su organización está a cargo de la Asociación de Fútbol de Japón, perteneciente a la AFC. Japón es una de las selecciones más exitosas de Asia.",
+            topJugadores: ["Hidetoshi Nakata", "Shunsuke Nakamura", "Keisuke Honda", "Shinji Kagawa", "Kazuyoshi Miura"],
+            debut: 1917
+        };
+
+        // Elementos del DOM
+        const btnEstadisticas = document.getElementById('btnEstadisticas');
+        const btnVideo = document.getElementById('btnVideo');
+        const btnTrivia = document.getElementById('btnTrivia');
+        const btnModelo3D = document.getElementById('btnModelo3D');
+        const contenido = document.getElementById('contenido');
+
+        // Preguntas de trivia sobre la selección de Japón
+        const preguntasTrivia = [
+            {
+                pregunta: "¿En qué año debutó oficialmente la selección japonesa?",
+                opciones: ["1917", "1930", "1954", "1968"],
+                respuestaCorrecta: 0
+            },
+            {
+                pregunta: "¿Quién es considerado el jugador más emblemático de la selección japonesa?",
+                opciones: ["Shinji Kagawa", "Hidetoshi Nakata", "Keisuke Honda", "Shunsuke Nakamura"],
+                respuestaCorrecta: 1
+            },
+            {
+                pregunta: "¿En qué ediciones de la Copa del Mundo Japón alcanzó los octavos de final?",
+                opciones: ["2002, 2010 y 2018", "1998, 2006 y 2014", "2002, 2006 y 2010", "2010, 2014 y 2018"],
+                respuestaCorrecta: 0
+            },
+            {
+                pregunta: "¿Cuántas Copas Asiáticas ha ganado Japón?",
+                opciones: ["4", "3", "5", "2"],
+                respuestaCorrecta: 0
+            }
+        ];
+
+        // Función para mostrar estadísticas e historia
+        btnEstadisticas.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Estadísticas e Historia de ${datosEquipo.nombre}</h2>
+                <h3>Estadísticas:</h3>
+                <p>${datosEquipo.estadisticas}</p>
+                <h3>Historia:</h3>
+                <p>${datosEquipo.historia}</p>
+                <h3>Top 5 Mejores Jugadores:</h3>
+                <ol>
+                    ${datosEquipo.topJugadores.map(jugador => `<li>${jugador}</li>`).join('')}
+                </ol>
+                <p><strong>Año de debut:</strong> ${datosEquipo.debut}</p>
+            `;
+        });
+
+        // Función para mostrar el video
+        btnVideo.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Video de ${datosEquipo.nombre}</h2>
+                <div class="video-container">
+                    <video id="videoPlayer" controls>
+                        <source src="videos/${datosEquipo.nombre}.mp4" type="video/mp4">
+                        Tu navegador no soporta el elemento video.
+                    </video>
+                </div>
+                <div class="filtros-video">
+                    <button id="btnBN">Blanco y Negro</button>
+                    <button id="btnSaturado">Sobresaturado</button>
+                    <button id="btnNegativo">Negativo</button>
+                    <button id="btnLimpiar">Limpiar Filtro</button>
+                </div>
+            `;
+            
+            // Añadir funcionalidad a los botones de filtro
+            const videoPlayer = document.getElementById('videoPlayer');
+            const btnBN = document.getElementById('btnBN');
+            const btnSaturado = document.getElementById('btnSaturado');
+            const btnNegativo = document.getElementById('btnNegativo');
+            const btnLimpiar = document.getElementById('btnLimpiar');
+            
+            btnBN.addEventListener('click', function() {
+                videoPlayer.style.filter = "grayscale(100%)";
+            });
+            
+            btnSaturado.addEventListener('click', function() {
+                videoPlayer.style.filter = "saturate(300%)";
+            });
+            
+            btnNegativo.addEventListener('click', function() {
+                videoPlayer.style.filter = "invert(100%)";
+            });
+            
+            btnLimpiar.addEventListener('click', function() {
+                videoPlayer.style.filter = "none";
+            });
+        });
+
+        // Función para mostrar la trivia
+        btnTrivia.addEventListener('click', function() {
+            let triviaHTML = `
+                <h2>Trivia de ${datosEquipo.nombre}</h2>
+                <form id="formTrivia">
+            `;
+            
+            preguntasTrivia.forEach((pregunta, index) => {
+                triviaHTML += `
+                    <div class="pregunta">
+                        <p><strong>${index + 1}. ${pregunta.pregunta}</strong></p>
+                        ${pregunta.opciones.map((opcion, i) => `
+                            <div>
+                                <input type="radio" id="p${index}o${i}" name="p${index}" value="${i}">
+                                <label for="p${index}o${i}">${opcion}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+            
+            triviaHTML += `
+                    <button type="button" id="btnCalcular">Calcular Resultado</button>
+                </form>
+                <div id="resultadoTrivia" class="resultado"></div>
+            `;
+            
+            contenido.innerHTML = triviaHTML;
+            
+            // Añadir funcionalidad al botón de calcular resultado
+            document.getElementById('btnCalcular').addEventListener('click', function() {
+                let respuestasCorrectas = 0;
+                
+                preguntasTrivia.forEach((pregunta, index) => {
+                    const opciones = document.getElementsByName(`p${index}`);
+                    let seleccionada = -1;
+                    
+                    for (let i = 0; i < opciones.length; i++) {
+                        if (opciones[i].checked) {
+                            seleccionada = parseInt(opciones[i].value);
+                            break;
+                        }
+                    }
+                    
+                    if (seleccionada === pregunta.respuestaCorrecta) {
+                        respuestasCorrectas++;
+                    }
+                });
+                
+                const porcentaje = (respuestasCorrectas / preguntasTrivia.length) * 100;
+                document.getElementById('resultadoTrivia').innerHTML = `
+                    <p>Has acertado ${respuestasCorrectas} de ${preguntasTrivia.length} preguntas.</p>
+                    <p>Tu puntuación: ${porcentaje.toFixed(1)}%</p>
+                `;
+            });
+        });
+
+        // Función para el modelo 3D (por implementar)
+        btnModelo3D.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Modelo 3D</h2>
+                <p>Esta funcionalidad está en desarrollo.</p>
+            `;
+        });
+    </script>
+</body>
+</html>

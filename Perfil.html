@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Red Social</title>
+    <link rel="stylesheet" href="CSS/PerfilCSS.css">
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header" id="profileHeader">
+            <div class="image-preview-container">
+                <img src="IMG/icon.jpg" alt="Avatar" class="profile-avatar" id="profileAvatar">
+            </div>
+            <div class="profile-info">
+                <h1 id="profileName">Cargando...</h1>
+                <p id="profileEmail">Cargando correo...</p>
+                <button class="edit-profile-btn" id="editProfileBtn">Editar Perfil</button>
+                
+                <!-- Formulario de edición (oculto inicialmente) -->
+                <div class="edit-form" id="editProfileForm">
+                    <div class="image-preview-container">
+                        <img src="" alt="Vista previa" class="edit-image-preview" id="editImagePreview">
+                    </div>
+                    <label for="editProfileImage" class="file-input-label">Cambiar foto de perfil</label>
+                    <input type="file" id="editProfileImage" accept="image/*">
+                    <input type="text" id="editUsername" placeholder="Nuevo nombre de usuario">
+                    <button id="saveProfileBtn">Guardar Cambios</button>
+                    <button id="cancelEditBtn">Cancelar</button>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="followersCount">0</div>
+                        <div class="stat-label">Seguidores</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="postsCount">0</div>
+                        <div class="stat-label">Publicaciones</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="repostsCount">0</div>
+                        <div class="stat-label">Reposts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profileContent">
+            <div class="loading">Cargando datos del perfil...</div>
+        </div>
+    </div>
+</body>
+</html>

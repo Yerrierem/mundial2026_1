@@ -1,0 +1,10 @@
+<!-- Solo para test - guarda como test.html -->
+<a-scene mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: true;">
+  <a-camera></a-camera>
+</a-scene>
+<script>
+  document.querySelector('a-scene').addEventListener('targetFound', (e) => {
+    const idx = e.detail.targetEl.getAttribute('mindar-image-target').targetIndex;
+    alert(`¡Target ${idx} detectado!`);
+  });
+</script>

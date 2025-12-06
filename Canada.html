@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de la Selección de Canadá de Fútbol</title>
+    <link rel="stylesheet" href="futbol.css">
+</head>
+<body>
+    <h1>Información de la Selección de Canadá</h1>
+    
+    <div class="botones">
+        <button id="btnEstadisticas">Estadísticas e Historia</button>
+        <button id="btnVideo">Ver Video</button>
+        <button id="btnTrivia">Jugar Trivia</button>
+        <button id="btnModelo3D">Modelo 3D</button>
+    </div>
+    
+    <div class="contenido" id="contenido">
+        <!-- Aquí se mostrará el contenido según el botón seleccionado -->
+        <p>Selecciona una opción para ver información sobre la selección de Canadá de fútbol.</p>
+    </div>
+
+    <script>
+        // Datos de la selección de Canadá
+        const datosEquipo = {
+            nombre: "Canadá",
+            estadisticas: "La selección canadiense ha participado en 2 Copas del Mundo (1986 y 2022) y ha ganado 2 Copas de Oro de la CONCACAF. También ganó la medalla de oro en los Juegos Olímpicos de 1904.",
+            historia: "La selección de fútbol de Canadá es el equipo representativo del país en las competiciones oficiales. Su organización está a cargo de la Asociación Canadiense de Fútbol. Canadá ha experimentado un resurgimiento reciente en el fútbol internacional, clasificándose para la Copa del Mundo 2022 después de 36 años de ausencia.",
+            topJugadores: ["Alphonso Davies", "Jonathan David", "Atiba Hutchinson", "Cyle Larin", "Junior Hoilett"],
+            debut: 1924
+        };
+
+        // Elementos del DOM
+        const btnEstadisticas = document.getElementById('btnEstadisticas');
+        const btnVideo = document.getElementById('btnVideo');
+        const btnTrivia = document.getElementById('btnTrivia');
+        const btnModelo3D = document.getElementById('btnModelo3D');
+        const contenido = document.getElementById('contenido');
+
+        // Preguntas de trivia sobre la selección de Canadá
+        const preguntasTrivia = [
+            {
+                pregunta: "¿En qué año debutó oficialmente la selección canadiense?",
+                opciones: ["1924", "1930", "1957", "1970"],
+                respuestaCorrecta: 0
+            },
+            {
+                pregunta: "¿Quién es considerado la estrella actual de la selección canadiense?",
+                opciones: ["Alphonso Davies", "Jonathan David", "Atiba Hutchinson", "Cyle Larin"],
+                respuestaCorrecta: 0
+            },
+            {
+                pregunta: "¿En qué años Canadá participó en la Copa del Mundo?",
+                opciones: ["1986 y 2022", "1990 y 2018", "1978 y 1994", "2002 y 2010"],
+                respuestaCorrecta: 0
+            },
+            {
+                pregunta: "¿Cuántas Copas de Oro de la CONCACAF ha ganado Canadá?",
+                opciones: ["2", "1", "3", "0"],
+                respuestaCorrecta: 0
+            }
+        ];
+
+        // Función para mostrar estadísticas e historia
+        btnEstadisticas.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Estadísticas e Historia de ${datosEquipo.nombre}</h2>
+                <h3>Estadísticas:</h3>
+                <p>${datosEquipo.estadisticas}</p>
+                <h3>Historia:</h3>
+                <p>${datosEquipo.historia}</p>
+                <h3>Top 5 Mejores Jugadores:</h3>
+                <ol>
+                    ${datosEquipo.topJugadores.map(jugador => `<li>${jugador}</li>`).join('')}
+                </ol>
+                <p><strong>Año de debut:</strong> ${datosEquipo.debut}</p>
+            `;
+        });
+
+        // Función para mostrar el video
+        btnVideo.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Video de ${datosEquipo.nombre}</h2>
+                <div class="video-container">
+                    <video id="videoPlayer" controls>
+                        <source src="videos/${datosEquipo.nombre}.mp4" type="video/mp4">
+                        Tu navegador no soporta el elemento video.
+                    </video>
+                </div>
+                <div class="filtros-video">
+                    <button id="btnBN">Blanco y Negro</button>
+                    <button id="btnSaturado">Sobresaturado</button>
+                    <button id="btnNegativo">Negativo</button>
+                    <button id="btnLimpiar">Limpiar Filtro</button>
+                </div>
+            `;
+            
+            // Añadir funcionalidad a los botones de filtro
+            const videoPlayer = document.getElementById('videoPlayer');
+            const btnBN = document.getElementById('btnBN');
+            const btnSaturado = document.getElementById('btnSaturado');
+            const btnNegativo = document.getElementById('btnNegativo');
+            const btnLimpiar = document.getElementById('btnLimpiar');
+            
+            btnBN.addEventListener('click', function() {
+                videoPlayer.style.filter = "grayscale(100%)";
+            });
+            
+            btnSaturado.addEventListener('click', function() {
+                videoPlayer.style.filter = "saturate(300%)";
+            });
+            
+            btnNegativo.addEventListener('click', function() {
+                videoPlayer.style.filter = "invert(100%)";
+            });
+            
+            btnLimpiar.addEventListener('click', function() {
+                videoPlayer.style.filter = "none";
+            });
+        });
+
+        // Función para mostrar la trivia
+        btnTrivia.addEventListener('click', function() {
+            let triviaHTML = `
+                <h2>Trivia de ${datosEquipo.nombre}</h2>
+                <form id="formTrivia">
+            `;
+            
+            preguntasTrivia.forEach((pregunta, index) => {
+                triviaHTML += `
+                    <div class="pregunta">
+                        <p><strong>${index + 1}. ${pregunta.pregunta}</strong></p>
+                        ${pregunta.opciones.map((opcion, i) => `
+                            <div>
+                                <input type="radio" id="p${index}o${i}" name="p${index}" value="${i}">
+                                <label for="p${index}o${i}">${opcion}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+            
+            triviaHTML += `
+                    <button type="button" id="btnCalcular">Calcular Resultado</button>
+                </form>
+                <div id="resultadoTrivia" class="resultado"></div>
+            `;
+            
+            contenido.innerHTML = triviaHTML;
+            
+            // Añadir funcionalidad al botón de calcular resultado
+            document.getElementById('btnCalcular').addEventListener('click', function() {
+                let respuestasCorrectas = 0;
+                
+                preguntasTrivia.forEach((pregunta, index) => {
+                    const opciones = document.getElementsByName(`p${index}`);
+                    let seleccionada = -1;
+                    
+                    for (let i = 0; i < opciones.length; i++) {
+                        if (opciones[i].checked) {
+                            seleccionada = parseInt(opciones[i].value);
+                            break;
+                        }
+                    }
+                    
+                    if (seleccionada === pregunta.respuestaCorrecta) {
+                        respuestasCorrectas++;
+                    }
+                });
+                
+                const porcentaje = (respuestasCorrectas / preguntasTrivia.length) * 100;
+                document.getElementById('resultadoTrivia').innerHTML = `
+                    <p>Has acertado ${respuestasCorrectas} de ${preguntasTrivia.length} preguntas.</p>
+                    <p>Tu puntuación: ${porcentaje.toFixed(1)}%</p>
+                `;
+            });
+        });
+
+        // Función para el modelo 3D (por implementar)
+        btnModelo3D.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Modelo 3D</h2>
+                <p>Esta funcionalidad está en desarrollo.</p>
+            `;
+        });
+    </script>
+</body>
+</html>

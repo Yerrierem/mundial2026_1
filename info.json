@@ -1,0 +1,10 @@
+{
+    "mexico": {
+        "titulo": "Selección Mexicana",
+        "descripcion": "La selección de fútbol de México es el equipo representativo del país en competiciones oficiales. Ha participado en múltiples Copas del Mundo y es una potencia en la CONCACAF."
+    },
+    "argentina": {
+        "titulo": "Selección Argentina",
+        "descripcion": "La selección de fútbol de Argentina es una de las más exitosas del mundo, ganadora de múltiples Copas América y Copas del Mundo. Es conocida por grandes figuras como Maradona y Messi."
+    }
+}

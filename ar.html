@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Realidad Aumentada - Texto y Modelo 3D Centrados</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .instrucciones {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            z-index: 998;
+            font-size: 14px;
+        }
+        
+        a-scene {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="instrucciones" id="instrucciones">
+        Enfoca la cámara hacia una bandera para ver el contenido de Realidad Aumentada.
+    </div>
+
+    <a-scene
+        mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: true;"
+        color-space="sRGB"
+        renderer="colorManagement: true; physicallyCorrectLights: true;"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: true"
+    >
+        <a-assets>
+            <a-asset-item id="modeloMexico" src="./assets/Mexico.glb"></a-asset-item>
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+        <a-entity id="target-argentina" mindar-image-target="targetIndex: 0">
+            <a-text 
+                id="texto-argentina"
+                value="ARGENTINA"
+                color="blue"
+                align="center"
+                visible="false"
+                position="0 0.05 0" 
+                scale="2 2 2"
+                width="5">
+            </a-text>
+        </a-entity>
+
+        <a-entity id="target-mexico" mindar-image-target="targetIndex: 1">
+            <a-text 
+                id="texto-mexico"
+                value="MEXICO"
+                color="red"
+                align="center"
+                visible="false"
+                position="0 0.05 0" 
+                scale="2 2 2"
+                width="5">
+            </a-text>
+            
+            <a-gltf-model
+                id="modelo-mexico-3d"
+                src="#modeloMexico"
+                position="0 0 0"      
+                scale="0.2 0.2 0.2"      
+                rotation="0 0 0"
+                visible="false">
+            </a-gltf-model>
+        </a-entity>
+        
+        <a-entity light="type: ambient; color: #FFF; intensity: 0.9"></a-entity>
+        <a-entity light="type: directional; color: #FFF; intensity: 0.7" position="0 1 1"></a-entity>
+    </a-scene>
+
+    <script>
+        // Obtener elementos
+        const textoMexico = document.getElementById("texto-mexico");
+        const textoArgentina = document.getElementById("texto-argentina");
+        const modeloMexico = document.getElementById("modelo-mexico-3d"); 
+        const instrucciones = document.getElementById("instrucciones");
+        
+        console.log("🔍 Configuración de índices:");
+        console.log("- México (targetIndex: 1)");
+        console.log("- Argentina (targetIndex: 0)");
+
+        // --- LÓGICA PARA ARGENTINA (ÍNDICE 0) ---
+        const targetArgentina = document.getElementById("target-argentina");
+        if (targetArgentina) {
+            targetArgentina.addEventListener("targetFound", () => {
+                console.log("✅ Argentina detectada (índice 0) → Mostrando 'ARGENTINA'");
+                if (textoArgentina) {
+                    textoArgentina.setAttribute("visible", "true");
+                    // Animación de escala
+                    textoArgentina.setAttribute("animation", {
+                        property: "scale",
+                        from: "2 2 2",
+                        to: "2.5 2.5 2.5",
+                        dir: "alternate",
+                        loop: true,
+                        dur: 1500,
+                        easing: "easeInOutSine"
+                    });
+                }
+                instrucciones.style.display = "none";
+            });
+
+            targetArgentina.addEventListener("targetLost", () => {
+                console.log("❌ Argentina perdida");
+                if (textoArgentina) {
+                    textoArgentina.setAttribute("visible", "false");
+                    textoArgentina.removeAttribute("animation");
+                }
+                instrucciones.style.display = "block";
+            });
+        }
+
+        // --- LÓGICA PARA MÉXICO (ÍNDICE 1) ---
+        const targetMexico = document.getElementById("target-mexico");
+        if (targetMexico) {
+            targetMexico.addEventListener("targetFound", () => {
+                console.log("✅ México detectado (índice 1) → Mostrando 'MEXICO' y modelo 3D");
+                
+                // Mostrar texto y animar posición
+                if (textoMexico) {
+                    textoMexico.setAttribute("visible", "true");
+                    // Ajustamos el "to" de la animación para que siga en el centro
+                    textoMexico.setAttribute("animation", {
+                        property: "position",
+                        from: "0 0.05 0", // Se mueve desde la posición inicial centrada
+                        to: "0 0.45 0",  // Mueve ligeramente el texto hacia arriba
+                        dir: "alternate",
+                        loop: true,
+                        dur: 2000,
+                        easing: "easeInOutSine"
+                    });
+                }
+                
+                // Mostrar el Modelo 3D
+                if (modeloMexico) {
+                    modeloMexico.setAttribute("visible", "true");
+                }
+                
+                instrucciones.style.display = "none";
+            });
+
+            targetMexico.addEventListener("targetLost", () => {
+                console.log("❌ México perdido");
+                
+                // Ocultar texto y eliminar animación
+                if (textoMexico) {
+                    textoMexico.setAttribute("visible", "false");
+                    textoMexico.removeAttribute("animation");
+                    // Asegurarse de resetear la posición (aunque 'from' lo hace, es buena práctica)
+                    textoMexico.setAttribute("position", "0 0.05 0");
+                }
+                
+                // Ocultar el Modelo 3D
+                if (modeloMexico) {
+                    modeloMexico.setAttribute("visible", "false");
+                }
+                
+                instrucciones.style.display = "block";
+            });
+        }
+        
+        // Debug final
+        console.log("México targetIndex:", document.getElementById("target-mexico")?.getAttribute("mindar-image-target"));
+        console.log("Argentina targetIndex:", document.getElementById("target-argentina")?.getAttribute("mindar-image-target"));
+    </script>
+</body>
+</html>

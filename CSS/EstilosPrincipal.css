@@ -1,0 +1,956 @@
+/* ======= ESTILOS GENERALES ======= */
+body {
+    font-family: "Poppins", Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* ======= HEADER ======= */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(to right, #007BFF, #0056b3);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* ======= BOTONES EN EL HEADER ======= */
+.header-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.header-buttons button {
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: transform 0.2s, background 0.3s;
+}
+
+#btnHome {
+    background: #28a745;
+    color: white;
+}
+
+#btnHome:hover {
+    background: #218838;
+    transform: scale(1.05);
+}
+
+#toggleDarkMode {
+    background: #222;
+    color: blue;
+    font-size: 1.5em;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+#toggleDarkMode:hover {
+    transform: rotate(360deg);
+}
+
+/* ======= NAV BAR ======= */
+nav {
+    text-align: center;
+    padding: 15px;
+}
+
+/* ======= BUSCADOR ======= */
+#searchBar {
+    width: 70%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid #007BFF;
+    transition: all 0.3s;
+}
+
+#searchBar:focus {
+    border-color: #0056b3;
+    box-shadow: 0 0 10px rgba(0, 91, 187, 0.5);
+    outline: none;
+}
+
+/* ======= PUBLICACIONES ======= */
+.publicacion {
+    background: white;
+    margin: 20px auto;
+    padding: 15px;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.publicacion:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.publicacion img, 
+.publicacion video {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* ======= PERFIL ======= */
+.perfil-info {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(to bottom, #007BFF, #0056b3);
+    color: white;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.perfil-info img {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 4px solid white;
+    transition: transform 0.3s;
+}
+
+.perfil-info img:hover {
+    transform: scale(1.1);
+}
+
+#publicacionesUsuario {
+    max-width: 600px;
+    margin: auto;
+}
+
+/* ======= MODO OSCURO ======= */
+.dark-mode {
+    background-color: #181818;
+    color: white;
+}
+
+.dark-mode header {
+    background: linear-gradient(to right, #222, #444);
+}
+
+.dark-mode .publicacion {
+    background: #282828;
+    color: white;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .perfil-info {
+    background: linear-gradient(to bottom, #333, #555);
+}
+
+
+/* ======= MODO CELEBRIDAD ======= */
+.celebridad header {
+    background: linear-gradient(to right, #FFD700, #FFA500);
+    color: white;
+}
+
+.celebridad .perfil-info {
+    background: linear-gradient(to bottom, #FFD700, #FFA500);
+    border: 3px solid #FFD700;
+}
+
+.celebridad .perfil-info img {
+    border: 4px solid #FFD700;
+}
+
+.celebridad .publicacion {
+    border-left: 5px solid #FFD700;
+    box-shadow: 0px 4px 10px rgba(255, 215, 0, 0.5);
+}
+
+.celebridad {
+    font-weight: bold;
+    color: #ff9800; /* Naranja para destacar */
+}
+
+/* Estilo para el ícono de verificación */
+.verificado {
+    font-size: 1.2em;
+    color: #FFD700;
+    margin-left: 5px;
+}
+
+
+/*Logos*/
+@keyframes latido {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.logo {
+    height: 50px;
+    margin-right: 10px;
+    animation: latido 2s infinite alternate ease-in-out;
+}
+
+/* ======= BOTONES DEL NAV ======= */
+nav {
+    text-align: center;
+    padding: 15px;
+}
+
+nav button {
+    background: linear-gradient(to right, #007BFF, #0056b3);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+}
+
+nav button:hover {
+    background: linear-gradient(to right, #0056b3, #003d80);
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 91, 187, 0.5);
+}
+
+nav button:active {
+    transform: scale(1);
+    background: linear-gradient(to right, #004494, #002c66);
+}
+
+/* ====== BIENVENIDA ====== */
+.welcome-container {
+    text-align: center;
+    padding: 50px;
+}
+
+.welcome-container h1 {
+    font-size: 2.5em;
+    color: #007BFF;
+}
+
+.welcome-container p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.welcome-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.welcome-buttons .btn {
+    text-decoration: none;
+    background: linear-gradient(to right, #28a745, #218838);
+    color: white;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.welcome-buttons .btn:hover {
+    background: linear-gradient(to right, #218838, #1e7e34);
+    transform: scale(1.05);
+}
+
+/* ====== FORMULARIOS ====== */
+.form-container {
+    max-width: 400px;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    color: #007BFF;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container input {
+    margin: 10px 0;
+    padding: 10px;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+}
+
+.form-container button {
+    background: #007BFF;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.form-container button:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.form-container p {
+    margin-top: 10px;
+}
+
+.form-container a {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+/* Estilos para el botón de salida */
+#logoutButton {
+    background: #dc3545; /* Rojo */
+    color: white;
+    padding: 10px 20px;
+    font-size: 24px;  /* Ajusta el tamaño de la fuente/emojis */
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s, transform 0.2s;
+    display: flex; /* Para asegurar que el emoji se alinee correctamente */
+    justify-content: center; /* Centra el emoji */
+    align-items: center; /* Alinea el emoji verticalmente */
+}
+
+#logoutButton:hover {
+    background: #c82333; /* Rojo más oscuro */
+    transform: scale(1.05);
+}
+
+#logoutButton:active {
+    transform: scale(1);
+    background: #bd2130; /* Rojo muy oscuro */
+}
+
+/*=====REPORTAR====*/
+
+.reportar-btn {
+    background: #ff4d4d; /* Rojo */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.reportar-btn:hover {
+    background: #d90000;
+    transform: scale(1.1);
+}
+    
+
+/*==============NUEVAS PUBLIACIONES================*/
+
+#crearPublicacion {
+    margin: 20px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+#formPublicacion textarea {
+    width: 100%;
+    height: 80px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: none;
+}
+
+#formPublicacion input[type="file"] {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#formPublicacion button {
+    background: #007bff;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#formPublicacion button:hover {
+    background: #0056b3;
+}
+
+
+/*==============ELIMINAR PUBLIACIONES================*/
+.btnEliminar {
+    background-color: #ff4d4d; 
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btnEliminar:hover {
+    background-color: #cc0000; 
+    transform: scale(1.05);
+}
+
+.btnEliminar:active {
+    transform: scale(0.95);
+}
+
+/* ======= MODO OSCURO PARA CREAR PUBLICACIÓN ======= */
+.dark-mode #crearPublicacion {
+    background: #282828;
+    color: white;
+    border: 1px solid #555;
+}
+
+.dark-mode #formPublicacion textarea {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+}
+
+.dark-mode #formPublicacion input[type="file"] {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+}
+
+.dark-mode #formPublicacion button {
+    background: #444;
+    color: white;
+}
+
+.dark-mode #formPublicacion button:hover {
+    background: #666;
+}
+
+/*============REPOSTEAR======*/
+.repost-btn {
+    background-color: #4CAF50; /* Verde para un botón positivo */
+    color: white;
+    border: none;
+    padding: 10px 16px; /* Aumentamos el tamaño para que sea más grande */
+    font-size: 16px; /* Texto más grande */
+    font-weight: bold;
+    border-radius: 8px; /* Bordes más redondeados */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el icono y el texto */
+    text-transform: uppercase; /* Hacer el texto en mayúsculas */
+}
+
+.repost-btn:hover {
+    background-color: #45a049; /* Un verde más oscuro cuando se pasa el ratón */
+    transform: scale(1.05); /* Un ligero aumento al hacer hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.repost-btn:active {
+    transform: scale(0.95); /* Hacer que el botón se contraiga ligeramente al hacer clic */
+    box-shadow: none; /* Eliminar la sombra al hacer clic */
+}
+
+.repost-btn svg {
+    width: 18px; /* Asegurar que el ícono sea más pequeño */
+    height: 18px;
+}
+
+.editar-perfil {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.editar-perfil h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.btn-guardar {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-guardar:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+:root {
+            --primary-color: #4267B2;
+            --secondary-color: #898F9C;
+            --background-color: #f0f2f5;
+            --card-color: #ffffff;
+            --text-color: #1c1e21;
+            --border-color: #dddfe2;
+        }
+        
+        body.dark-mode {
+            --primary-color: #8b9dc3;
+            --secondary-color: #b0b3b8;
+            --background-color: #18191a;
+            --card-color: #242526;
+            --text-color: #e4e6eb;
+            --border-color: #3e4042;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: var(--card-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: var(--text-color);
+        }
+        
+        #crearPublicacion {
+            padding: 20px;
+            background-color: var(--card-color);
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+        
+        #formPublicacion textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            resize: vertical;
+        }
+        
+        #formPublicacion input[type="text"],
+        #formPublicacion select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        #formPublicacion button[type="submit"] {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .publicacion {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .publicacion-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .publicacion-avatar-container {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+
+        .publicacion-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .publicacion-user {
+            font-weight: bold;
+        }
+        
+        .publicacion-time {
+            color: var(--secondary-color);
+            font-size: 0.8em;
+        }
+        
+        .publicacion-content {
+            margin-bottom: 15px;
+        }
+        
+        .publicacion-titulo {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .publicacion-media {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .publicacion-categorias {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        
+        .categoria-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+        
+        .publicacion-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--secondary-color);
+        }
+        
+        .action-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .action-btn.liked {
+            color: #f44336;
+        }
+        
+        .action-btn.reposted {
+            color: #4CAF50;
+        }
+        
+        .action-btn.reported {
+            color: #FF9800;
+        }
+        
+        .comentarios-section {
+            margin-top: 15px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 10px;
+        }
+        
+        .comentarios-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        
+        .comentario {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .comentario-avatar-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+
+        .comentario-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .comentario-content {
+            flex: 1;
+            background-color: var(--background-color);
+            padding: 8px 12px;
+            border-radius: 18px;
+        }
+        
+        .comentario-user {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .comentario-texto {
+            margin: 5px 0;
+        }
+        
+        .comentario-time {
+            font-size: 0.7em;
+            color: var(--secondary-color);
+        }
+        
+        .nuevo-comentario {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .nuevo-comentario input {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        .nuevo-comentario button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+        
+        .loading {
+            color: var(--secondary-color);
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error {
+            color: #f44336;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #searchBar {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            width: 300px;
+        }
+        
+        .select-categorias {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+        
+        .categorias-seleccionadas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .categoria-seleccionada {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .remove-categoria {
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        
+        .categoria-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .categoria-selector select {
+            flex-grow: 1;
+            height: auto;
+            min-height: 38px;
+        }
+
+        .categorias-seleccionadas {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+            min-height: 30px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: #4267B2;
+            color: white;
+        }
+
+        .btn-remove-categoria {
+            background: none;
+            border: none;
+            color: white;
+            margin-left: 5px;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.2em;
+            line-height: 1;
+        }
+
+        .btn-remove-categoria:hover {
+            color: #ffcccc;
+        }
+        
+        .nueva-categoria {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .nueva-categoria input {
+            flex-grow: 1;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .nueva-categoria button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0 15px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .nueva-categoria button:hover {
+            background-color: #3a5a99;
+        }
