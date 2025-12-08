@@ -1,271 +1,459 @@
-/* futbol.css - Estilos para la página de la Selección Mexicana de Fútbol */
-
-/* Variables de colores */
-:root {
-  --gris-oscuro: #2c3e50;
-  --gris-medio: #34495e;
-  --gris-claro: #7f8c8d;
-  --gris-muy-claro: #ecf0f1;
-  --verde-grisaceo: #3d5a5f;
-  --azul-grisaceo: #4a6572;
-  --acento: #3498db;
-  --blanco: #ffffff;
-  --sombra: rgba(0, 0, 0, 0.1);
-}
+/* futbol.css - Estilos futbolísticos con temática verde y naranja */
 
 /* Estilos generales */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
-  color: var(--gris-oscuro);
-  background: linear-gradient(135deg, var(--gris-muy-claro) 0%, var(--gris-claro) 100%);
-  min-height: 100vh;
-  padding: 20px;
+    background-color: #0a3d0a;
+    background-image: 
+        linear-gradient(rgba(255, 140, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 140, 0, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: #333;
+    min-height: 100vh;
+    padding: 2rem;
 }
 
-/* Encabezado */
 h1 {
-  text-align: center;
-  color: var(--gris-oscuro);
-  margin-bottom: 30px;
-  font-size: 2.5rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 4px var(--sombra);
-  padding: 15px;
-  border-bottom: 3px solid var(--verde-grisaceo);
+    text-align: center;
+    color: #FF8C00;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    background-color: rgba(10, 61, 10, 0.9);
+    border-radius: 15px;
+    border: 5px solid #FF8C00;
+    position: relative;
+    overflow: hidden;
+}
+
+h1::before {
+    content: "⚽";
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+}
+
+h1::after {
+    content: "⚽";
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
 }
 
 h2 {
-  color: var(--gris-medio);
-  margin-bottom: 20px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--azul-grisaceo);
+    color: #0a3d0a;
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #FF8C00;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 h3 {
-  color: var(--gris-medio);
-  margin: 15px 0 10px;
-}
-
-/* Contenedor principal */
-.contenido {
-  background-color: var(--blanco);
-  border-radius: 10px;
-  box-shadow: 0 5px 15px var(--sombra);
-  padding: 25px;
-  margin-top: 20px;
-  transition: all 0.3s ease;
+    color: #0a3d0a;
+    font-size: 1.8rem;
+    margin: 1.5rem 0 1rem;
+    padding-left: 0.5rem;
+    border-left: 5px solid #FF8C00;
 }
 
 /* Botones principales */
 .botones {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
 }
 
 .botones button {
-  background: linear-gradient(to bottom, var(--gris-medio), var(--gris-oscuro));
-  color: var(--blanco);
-  border: none;
-  padding: 12px 25px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px var(--sombra);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+    padding: 1.2rem 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(to right, #0a3d0a, #1e6b1e);
+    color: white;
+    box-shadow: 0 6px 0 #063106;
+    position: relative;
+    overflow: hidden;
+    min-width: 200px;
+}
+
+.botones button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
+    transition: left 0.7s;
 }
 
 .botones button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 8px var(--sombra);
-  background: linear-gradient(to bottom, var(--azul-grisaceo), var(--gris-medio));
+    background: linear-gradient(to right, #1e6b1e, #0a3d0a);
+    transform: translateY(-3px);
+    box-shadow: 0 9px 0 #063106;
+}
+
+.botones button:hover::before {
+    left: 100%;
 }
 
 .botones button:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 4px var(--sombra);
+    transform: translateY(2px);
+    box-shadow: 0 3px 0 #063106;
 }
 
-/* Contenido específico */
-/* Estadísticas e Historia */
+/* Contenido principal */
+.contenido {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    padding: 2.5rem;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    border: 5px solid #FF8C00;
+    min-height: 400px;
+    position: relative;
+    overflow: hidden;
+}
+
+.contenido::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: repeating-linear-gradient(
+        90deg,
+        #0a3d0a,
+        #0a3d0a 15px,
+        #FF8C00 15px,
+        #FF8C00 30px
+    );
+}
+
 .contenido p {
-  margin-bottom: 15px;
-  line-height: 1.7;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: #333;
 }
 
-.contenido ol {
-  margin-left: 20px;
-  margin-bottom: 20px;
+.contenido p:first-child {
+    text-align: center;
+    font-size: 1.4rem;
+    color: #FF8C00;
+    font-weight: bold;
+    padding: 2rem;
 }
 
-.contenido li {
-  margin-bottom: 8px;
-  padding-left: 5px;
+/* Lista de jugadores */
+ol {
+    margin-left: 2rem;
+    margin-bottom: 2rem;
+    background-color: rgba(10, 61, 10, 0.1);
+    padding: 1.5rem 1.5rem 1.5rem 3rem;
+    border-radius: 10px;
+    border-left: 5px solid #FF8C00;
 }
 
-.contenido strong {
-  color: var(--gris-oscuro);
+ol li {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    padding: 0.5rem;
+    background-color: white;
+    border-radius: 5px;
+    border: 2px solid #0a3d0a;
+    transition: all 0.3s;
 }
 
-/* Video */
+ol li:hover {
+    background-color: #fff4e6;
+    transform: translateX(10px);
+    border-color: #FF8C00;
+}
+
+/* Video container */
 .video-container {
-  position: relative;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto 20px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px var(--sombra);
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin: 2rem auto;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 5px solid #0a3d0a;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-.video-container video {
-  width: 100%;
-  display: block;
-  transition: filter 0.3s ease;
+video {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: filter 0.5s ease;
 }
 
+/* Botones de filtro de video */
 .filtros-video {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .filtros-video button {
-  background-color: var(--gris-claro);
-  color: var(--blanco);
-  border: none;
-  padding: 8px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: linear-gradient(to right, #FF8C00, #FFA500);
+    color: white;
+    box-shadow: 0 4px 0 #cc7000;
 }
 
 .filtros-video button:hover {
-  background-color: var(--azul-grisaceo);
+    background: linear-gradient(to right, #FFA500, #FF8C00);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #cc7000;
 }
 
-/* Trivia */
-#formTrivia {
-  margin-bottom: 20px;
+.filtros-video button:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 0 #cc7000;
+}
+
+/* Formulario de trivia */
+form {
+    margin-top: 2rem;
 }
 
 .pregunta {
-  background-color: var(--gris-muy-claro);
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  border-left: 4px solid var(--verde-grisaceo);
+    background-color: rgba(10, 61, 10, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+    border: 3px solid #0a3d0a;
+    position: relative;
+    overflow: hidden;
+}
+
+.pregunta::before {
+    content: "?";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 4rem;
+    color: rgba(255, 140, 0, 0.2);
+    font-weight: bold;
 }
 
 .pregunta p {
-  margin-bottom: 10px;
-  font-weight: 600;
+    font-size: 1.3rem;
+    color: #0a3d0a;
+    margin-bottom: 1rem;
+    font-weight: bold;
 }
 
 .pregunta div {
-  margin-bottom: 5px;
+    margin-bottom: 0.8rem;
+    padding-left: 1rem;
 }
 
 .pregunta input[type="radio"] {
-  margin-right: 8px;
+    margin-right: 10px;
+    transform: scale(1.3);
+    accent-color: #FF8C00;
 }
 
+.pregunta label {
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 0.5rem;
+    border-radius: 5px;
+    display: inline-block;
+    width: calc(100% - 30px);
+}
+
+.pregunta label:hover {
+    background-color: rgba(255, 140, 0, 0.1);
+    transform: translateX(5px);
+}
+
+/* Botón de calcular resultado */
 #btnCalcular {
-  background: linear-gradient(to bottom, var(--verde-grisaceo), var(--gris-medio));
-  color: var(--blanco);
-  border: none;
-  padding: 12px 25px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px var(--sombra);
-  display: block;
-  margin: 20px auto 0;
+    padding: 1rem 2rem;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: linear-gradient(to right, #0a3d0a, #1e6b1e);
+    color: white;
+    box-shadow: 0 6px 0 #063106;
+    display: block;
+    margin: 2rem auto;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 #btnCalcular:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 8px var(--sombra);
-  background: linear-gradient(to bottom, var(--azul-grisaceo), var(--verde-grisaceo));
+    background: linear-gradient(to right, #1e6b1e, #0a3d0a);
+    transform: translateY(-3px);
+    box-shadow: 0 9px 0 #063106;
 }
 
+#btnCalcular:active {
+    transform: translateY(2px);
+    box-shadow: 0 3px 0 #063106;
+}
+
+/* Resultado de trivia */
 .resultado {
-  background-color: var(--gris-muy-claro);
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
-  font-weight: 600;
-  border-left: 4px solid var(--azul-grisaceo);
+    background-color: rgba(10, 61, 10, 0.9);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 2rem;
+    border: 3px solid #FF8C00;
 }
 
-/* Modelo 3D */
+.resultado p {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.resultado p:first-child {
+    color: #FF8C00;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+/* Mensaje de modelo 3D */
 .contenido p:last-child {
-  margin-bottom: 0;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #FF8C00;
+    font-weight: bold;
+    padding: 3rem;
+    background-color: rgba(10, 61, 10, 0.1);
+    border-radius: 10px;
+    border: 3px dashed #FF8C00;
+}
+
+/* Efectos de animación */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.contenido > * {
+    animation: aparecer 0.5s ease-out forwards;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  body {
-    padding: 10px;
-  }
-  
-  h1 {
-    font-size: 2rem;
-  }
-  
-  .botones {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .botones button {
-    width: 100%;
-    max-width: 300px;
-  }
-  
-  .contenido {
-    padding: 15px;
-  }
-  
-  .filtros-video {
-    flex-direction: column;
-  }
-  
-  .filtros-video button {
-    width: 100%;
-  }
+    body {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        padding: 0.8rem;
+    }
+    
+    h1::before, h1::after {
+        display: none;
+    }
+    
+    .botones {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .botones button {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .contenido {
+        padding: 1.5rem;
+    }
+    
+    .video-container {
+        max-width: 100%;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    h3 {
+        font-size: 1.5rem;
+    }
+    
+    .contenido p {
+        font-size: 1.1rem;
+    }
 }
 
-/* Animaciones */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.contenido > * {
-  animation: fadeIn 0.5s ease;
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .botones button {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+    
+    .contenido {
+        padding: 1rem;
+    }
+    
+    .filtros-video {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .filtros-video button {
+        width: 100%;
+        max-width: 200px;
+    }
 }

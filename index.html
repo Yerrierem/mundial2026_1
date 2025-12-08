@@ -10,25 +10,58 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
+            background-color: #0a3d0a;
+            background-image: 
+                linear-gradient(rgba(255, 140, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 140, 0, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
             color: #333;
+            min-height: 100vh;
         }
         
         header {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
             color: white;
-            padding: 2rem;
+            padding: 2.5rem;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-bottom: 5px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255, 140, 0, 0.2) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(255, 140, 0, 0.2) 2px, transparent 2px);
+            background-size: 60px 60px;
+            pointer-events: none;
         }
         
         h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            color: #FF8C00;
+        }
+        
+        header p {
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
         
         .container {
@@ -37,73 +70,359 @@
             padding: 2rem;
         }
         
+        /* Botones superiores */
+        .botones-superiores {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .boton-superior {
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(to right, #FF8C00, #FFA500);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 0 #cc7000;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .boton-superior:hover {
+            background: linear-gradient(to right, #FFA500, #FF8C00);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 9px 0 #cc7000;
+        }
+        
+        .boton-superior:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #cc7000;
+        }
+        
+        .boton-superior.trivia {
+            background: linear-gradient(to right, #0a3d0a, #1e6b1e);
+            box-shadow: 0 6px 0 #063106;
+        }
+        
+        .boton-superior.trivia:hover {
+            background: linear-gradient(to right, #1e6b1e, #0a3d0a);
+            box-shadow: 0 9px 0 #063106;
+        }
+        
+        .boton-superior.realidad {
+            background: linear-gradient(to right, #75AADB, #6CACE4);
+            box-shadow: 0 6px 0 #4A86C8;
+        }
+        
+        .boton-superior.realidad:hover {
+            background: linear-gradient(to right, #6CACE4, #75AADB);
+            box-shadow: 0 9px 0 #4A86C8;
+        }
+        
+        .icono-boton {
+            font-size: 1.5rem;
+        }
+        
         /* Estilos para las cards de países */
         .countries-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
         
         .country-card {
-            background-color: white;
-            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            border: 3px solid #0a3d0a;
+            border-top: 8px solid #FF8C00;
+            position: relative;
+        }
+        
+        .country-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: repeating-linear-gradient(
+                90deg,
+                #0a3d0a,
+                #0a3d0a 10px,
+                #FF8C00 10px,
+                #FF8C00 20px
+            );
         }
         
         .country-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
         }
         
         .country-card img {
             width: 100%;
-            height: 160px;
+            height: 180px;
             object-fit: cover;
+            border-bottom: 3px solid #0a3d0a;
         }
         
         .country-card h3 {
-            padding: 1rem;
+            padding: 1.2rem;
             text-align: center;
             background-color: #f8f9fa;
+            color: #0a3d0a;
+            font-size: 1.5rem;
+            border-bottom: 2px dashed #FF8C00;
+            margin: 0;
         }
         
         .btn {
             display: block;
             width: 100%;
-            padding: 0.8rem;
-            background-color: #2a5298;
+            padding: 1rem;
+            background: linear-gradient(to right, #0a3d0a, #1e6b1e);
             color: white;
             border: none;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 0 #063106;
+        }
+        
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
+            transition: left 0.7s;
         }
         
         .btn:hover {
-            background-color: #1e3c72;
+            background: linear-gradient(to right, #1e6b1e, #0a3d0a);
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Título de la sección */
+        .section-title {
+            text-align: center;
+            color: white;
+            margin: 2rem 0;
+            padding: 1rem;
+            background-color: rgba(10, 61, 10, 0.8);
+            border-radius: 10px;
+            border: 3px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: #FF8C00;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 140, 0, 0.2) 30px, transparent 30px),
+                radial-gradient(circle at 80% 50%, rgba(255, 140, 0, 0.2) 30px, transparent 30px);
+            pointer-events: none;
         }
         
         footer {
-            background-color: #333;
+            background-color: #0a3d0a;
             color: white;
             text-align: center;
-            padding: 1.5rem;
-            margin-top: 3rem;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 5px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                #FF8C00 10px,
+                #FF8C00 20px
+            );
+        }
+        
+        footer p {
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Animaciones */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .boton-superior.trivia {
+            animation: bounce 2s infinite ease-in-out;
+        }
+        
+        /* Efecto para las tarjetas al cargar */
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .country-card {
+            animation: cardAppear 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        /* Establecer diferentes delays para cada tarjeta */
+        .country-card:nth-child(1) { animation-delay: 0.1s; }
+        .country-card:nth-child(2) { animation-delay: 0.2s; }
+        .country-card:nth-child(3) { animation-delay: 0.3s; }
+        .country-card:nth-child(4) { animation-delay: 0.4s; }
+        .country-card:nth-child(5) { animation-delay: 0.5s; }
+        .country-card:nth-child(6) { animation-delay: 0.6s; }
+        .country-card:nth-child(7) { animation-delay: 0.7s; }
+        .country-card:nth-child(8) { animation-delay: 0.8s; }
+        .country-card:nth-child(9) { animation-delay: 0.9s; }
+        .country-card:nth-child(10) { animation-delay: 1.0s; }
+        .country-card:nth-child(11) { animation-delay: 1.1s; }
+        .country-card:nth-child(12) { animation-delay: 1.2s; }
+        .country-card:nth-child(13) { animation-delay: 1.3s; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .botones-superiores {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .boton-superior {
+                width: 100%;
+                max-width: 300px;
+                padding: 1rem 1.5rem;
+                font-size: 1.1rem;
+            }
+            
+            .countries-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .country-card img {
+                height: 140px;
+            }
+            
+            .country-card h3 {
+                font-size: 1.2rem;
+                padding: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .countries-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .boton-superior {
+                width: 100%;
+                max-width: 250px;
+                font-size: 1rem;
+                padding: 0.8rem 1.2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.6rem;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Mundial de Fútbol</h1>
+        <h1>⚽ Mundial de Fútbol 2026 ⚽</h1>
         <p>Explora los equipos nacionales y sus historias</p>
     </header>
     
     <div class="container">
-        <h2>Selecciona un país</h2>
+        <div class="botones-superiores">
+            <a href="trivia.html" class="boton-superior trivia">
+                <span class="icono-boton">🎮</span>
+                Jugar Trivia de Fútbol
+            </a>
+            <a href="ar.html" class="boton-superior realidad">
+                <span class="icono-boton"></span>
+                Escáner de Realidad Aumentada
+            </a>
+        </div>
+        
+        <div class="section-title">
+            <h2>Selecciona un país</h2>
+        </div>
+        
         <div class="countries-grid" id="countries-grid">
             <!-- Las cards de países se generarán dinámicamente con JavaScript -->
         </div>
@@ -125,15 +444,20 @@
         function generateCountryCards() {
             const grid = document.getElementById('countries-grid');
             
-            countries.forEach(country => {
+            countries.forEach((country, index) => {
                 // Crear la card
                 const card = document.createElement('div');
                 card.className = 'country-card';
+                card.style.animationDelay = `${index * 0.1 + 0.1}s`;
                 
                 // Crear la imagen
                 const img = document.createElement('img');
                 img.src = `img/${country}.png`;
                 img.alt = `Bandera de ${country}`;
+                img.onerror = function() {
+                    // Si la imagen no existe, usar una imagen de placeholder
+                    this.src = 'https://via.placeholder.com/280x180/0a3d0a/FFFFFF?text=' + encodeURIComponent(country);
+                };
                 
                 // Crear el título
                 const title = document.createElement('h3');
@@ -142,7 +466,7 @@
                 // Crear el botón
                 const button = document.createElement('button');
                 button.className = 'btn';
-                button.textContent = 'Ver detalles';
+                button.textContent = 'Ver detalles del equipo';
                 button.addEventListener('click', () => {
                     // Redirigir a la página del país
                     window.location.href = `${country}.html`;

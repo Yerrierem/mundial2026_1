@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Realidad Aumentada - Texto y Modelo 3D Centrados</title>
+    <title>Realidad Aumentada - Modelo Animado y Botón</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     
@@ -31,12 +31,31 @@
             width: 100%;
             height: 100vh;
         }
+
+        /* Estilo para el botón de animación */
+        #boton-animacion {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 999;
+            display: none; /* Inicialmente oculto */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
     <div class="instrucciones" id="instrucciones">
         Enfoca la cámara hacia una bandera para ver el contenido de Realidad Aumentada.
     </div>
+
+    <button id="boton-animacion">▶️ Ver Animación</button>
 
     <a-scene
         mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: true;"
@@ -46,7 +65,8 @@
         device-orientation-permission-ui="enabled: true"
     >
         <a-assets>
-            <a-asset-item id="modeloMexico" src="./assets/Mexico.glb"></a-asset-item>
+            <a-asset-item id="modeloMexicoEstatico" src="./assets/Mexico.glb"></a-asset-item>
+            <a-asset-item id="modeloMexicoAnimado" src="./assets/MexicoA.glb"></a-asset-item>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -77,13 +97,24 @@
             </a-text>
             
             <a-gltf-model
-                id="modelo-mexico-3d"
-                src="#modeloMexico"
+                id="modelo-estatico"
+                src="#modeloMexicoEstatico"
                 position="0 0 0"      
                 scale="0.2 0.2 0.2"      
                 rotation="0 0 0"
                 visible="false">
             </a-gltf-model>
+
+            <!-- Modelo animado con componente personalizado -->
+            <a-entity
+                id="modelo-animado"
+                gltf-model="#modeloMexicoAnimado"
+                custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat"
+                position="0 0 0"      
+                scale="0.2 0.2 0.2"
+                rotation="0 0 0"
+                visible="false">
+            </a-entity>
         </a-entity>
         
         <a-entity light="type: ambient; color: #FFF; intensity: 0.9"></a-entity>
@@ -91,11 +122,150 @@
     </a-scene>
 
     <script>
+        // ==============================================
+        // COMPONENTE PERSONALIZADO PARA ANIMACIONES GLTF
+        // ==============================================
+        AFRAME.registerComponent('custom-animation-mixer', {
+            schema: {
+                clipIndex: { type: 'int', default: 0 },
+                clipName: { type: 'string', default: '' },
+                autoPlay: { type: 'boolean', default: true },
+                loop: { type: 'boolean', default: true },
+                timeScale: { type: 'number', default: 1 }
+            },
+            
+            init: function() {
+                console.log("🔧 Custom Animation Mixer inicializado");
+                
+                this.mixer = null;
+                this.actions = [];
+                this.animations = [];
+                this.isPlaying = false;
+                
+                this.el.addEventListener('model-loaded', (e) => {
+                    console.log("✅ Modelo GLTF cargado");
+                    this.setupAnimations(e.detail.model);
+                });
+            },
+            
+            setupAnimations: function(model) {
+                console.log("🔄 Buscando animaciones en el modelo...");
+                
+                this.animations = [];
+                this.actions = [];
+                
+                model.traverse((node) => {
+                    if (node.animations && node.animations.length > 0) {
+                        console.log(`🎭 Encontradas ${node.animations.length} animación(es) en nodo: "${node.name || 'sin nombre'}"`);
+                        
+                        node.animations.forEach((clip, index) => {
+                            console.log(`   Clip ${index}: "${clip.name}" (${clip.duration.toFixed(2)}s)`);
+                            this.animations.push({
+                                name: clip.name,
+                                clip: clip,
+                                node: node
+                            });
+                        });
+                    }
+                });
+                
+                if (this.animations.length > 0) {
+                    this.mixer = new THREE.AnimationMixer(model);
+                    console.log("🎬 AnimationMixer creado");
+                    
+                    this.animations.forEach((anim) => {
+                        const action = this.mixer.clipAction(anim.clip);
+                        action.clipName = anim.name;
+                        this.actions.push(action);
+                    });
+                    
+                    if (this.data.autoPlay) {
+                        this.playAnimation();
+                    }
+                } else {
+                    console.warn("⚠️ No se encontraron animaciones en el modelo GLTF");
+                }
+            },
+            
+            playAnimation: function(clipIndex = null) {
+                if (!this.mixer || this.actions.length === 0) {
+                    console.warn("No hay animaciones para reproducir");
+                    return;
+                }
+                
+                const index = clipIndex !== null ? clipIndex : this.data.clipIndex;
+                
+                if (index >= this.actions.length) {
+                    console.warn(`Índice ${index} fuera de rango. Usando 0.`);
+                    this.data.clipIndex = 0;
+                    this.playAnimation(0);
+                    return;
+                }
+                
+                this.stopAnimation();
+                
+                const action = this.actions[index];
+                
+                if (this.data.loop) {
+                    action.setLoop(THREE.LoopRepeat, Infinity);
+                } else {
+                    action.setLoop(THREE.LoopOnce, 1);
+                }
+                
+                action.setEffectiveTimeScale(this.data.timeScale);
+                action.play();
+                this.isPlaying = true;
+                
+                console.log(`▶ Reproduciendo animación: "${action.clipName}"`);
+            },
+            
+            stopAnimation: function() {
+                if (!this.mixer) return;
+                
+                this.actions.forEach(action => {
+                    action.stop();
+                });
+                
+                this.isPlaying = false;
+                console.log("⏸ Animación detenida");
+            },
+            
+            tick: function(time, delta) {
+                if (this.mixer && this.isPlaying) {
+                    const deltaSeconds = delta / 1000;
+                    this.mixer.update(deltaSeconds);
+                }
+            },
+            
+            playAnimationByName: function(clipName) {
+                if (!this.mixer) return;
+                
+                const index = this.animations.findIndex(anim => anim.name === clipName);
+                
+                if (index !== -1) {
+                    this.playAnimation(index);
+                } else {
+                    console.warn(`No se encontró animación con nombre: "${clipName}"`);
+                }
+            },
+            
+            getAnimationsInfo: function() {
+                return this.animations.map(anim => ({
+                    name: anim.name,
+                    duration: anim.clip.duration
+                }));
+            }
+        });
+
         // Obtener elementos
         const textoMexico = document.getElementById("texto-mexico");
         const textoArgentina = document.getElementById("texto-argentina");
-        const modeloMexico = document.getElementById("modelo-mexico-3d"); 
+        const modeloEstatico = document.getElementById("modelo-estatico");
+        const modeloAnimado = document.getElementById("modelo-animado");
         const instrucciones = document.getElementById("instrucciones");
+        const botonAnimacion = document.getElementById("boton-animacion");
+        
+        let isAnimated = false;
         
         console.log("🔍 Configuración de índices:");
         console.log("- México (targetIndex: 1)");
@@ -108,7 +278,6 @@
                 console.log("✅ Argentina detectada (índice 0) → Mostrando 'ARGENTINA'");
                 if (textoArgentina) {
                     textoArgentina.setAttribute("visible", "true");
-                    // Animación de escala
                     textoArgentina.setAttribute("animation", {
                         property: "scale",
                         from: "2 2 2",
@@ -136,16 +305,14 @@
         const targetMexico = document.getElementById("target-mexico");
         if (targetMexico) {
             targetMexico.addEventListener("targetFound", () => {
-                console.log("✅ México detectado (índice 1) → Mostrando 'MEXICO' y modelo 3D");
+                console.log("✅ México detectado (índice 1) → Mostrando contenido");
                 
-                // Mostrar texto y animar posición
                 if (textoMexico) {
                     textoMexico.setAttribute("visible", "true");
-                    // Ajustamos el "to" de la animación para que siga en el centro
                     textoMexico.setAttribute("animation", {
                         property: "position",
-                        from: "0 0.05 0", // Se mueve desde la posición inicial centrada
-                        to: "0 0.45 0",  // Mueve ligeramente el texto hacia arriba
+                        from: "0 0.05 0",
+                        to: "0 0.45 0",
                         dir: "alternate",
                         loop: true,
                         dur: 2000,
@@ -153,35 +320,69 @@
                     });
                 }
                 
-                // Mostrar el Modelo 3D
-                if (modeloMexico) {
-                    modeloMexico.setAttribute("visible", "true");
+                if (!isAnimated) {
+                    modeloEstatico.setAttribute("visible", "true");
+                } else {
+                    modeloAnimado.setAttribute("visible", "true");
+                    // Iniciar la animación cuando se detecta el target
+                    const animComponent = modeloAnimado.components['custom-animation-mixer'];
+                    if (animComponent && animComponent.isPlaying === false) {
+                        animComponent.playAnimation();
+                    }
                 }
                 
+                botonAnimacion.style.display = "block";
                 instrucciones.style.display = "none";
             });
 
             targetMexico.addEventListener("targetLost", () => {
                 console.log("❌ México perdido");
                 
-                // Ocultar texto y eliminar animación
                 if (textoMexico) {
                     textoMexico.setAttribute("visible", "false");
                     textoMexico.removeAttribute("animation");
-                    // Asegurarse de resetear la posición (aunque 'from' lo hace, es buena práctica)
                     textoMexico.setAttribute("position", "0 0.05 0");
                 }
                 
-                // Ocultar el Modelo 3D
-                if (modeloMexico) {
-                    modeloMexico.setAttribute("visible", "false");
-                }
-                
+                modeloEstatico.setAttribute("visible", "false");
+                modeloAnimado.setAttribute("visible", "false");
+                botonAnimacion.style.display = "none";
+
                 instrucciones.style.display = "block";
             });
         }
         
-        // Debug final
+        // --- LÓGICA DEL BOTÓN ---
+        botonAnimacion.addEventListener("click", () => {
+            if (isAnimated) {
+                // Cambiar a Estático
+                console.log("🔄 Cambiando a modelo Estático");
+                modeloAnimado.setAttribute("visible", "false");
+                
+                const animComponent = modeloAnimado.components['custom-animation-mixer'];
+                if (animComponent) {
+                    animComponent.stopAnimation();
+                }
+                
+                modeloEstatico.setAttribute("visible", "true");
+                botonAnimacion.textContent = "▶️ Ver Animación";
+                isAnimated = false;
+            } else {
+                // Cambiar a Animado
+                console.log("🔄 Cambiando a modelo Animado");
+                modeloEstatico.setAttribute("visible", "false");
+                modeloAnimado.setAttribute("visible", "true");
+                botonAnimacion.textContent = "⏹️ Ver Estático";
+                isAnimated = true;
+                
+                // Iniciar la animación
+                const animComponent = modeloAnimado.components['custom-animation-mixer'];
+                if (animComponent && animComponent.isPlaying === false) {
+                    animComponent.playAnimation();
+                }
+            }
+        });
+
         console.log("México targetIndex:", document.getElementById("target-mexico")?.getAttribute("mindar-image-target"));
         console.log("Argentina targetIndex:", document.getElementById("target-argentina")?.getAttribute("mindar-image-target"));
     </script>

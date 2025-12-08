@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario de Fútbol</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+        }
+        
+        body {
+            background-color: #0a3d0a;
+            background-image: 
+                linear-gradient(rgba(255, 140, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 140, 0, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            border-bottom: 5px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255, 140, 0, 0.2) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(255, 140, 0, 0.2) 2px, transparent 2px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #FF8C00;
+        }
+        
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        
+        .info-box {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: 3px solid #FF8C00;
+            border-left: 8px solid #0a3d0a;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-box::before {
+            content: "⚽";
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 60px;
+            opacity: 0.2;
+            transform: rotate(25deg);
+        }
+        
+        .question-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.8rem;
+            padding: 1.8rem;
+            border: 3px solid #0a3d0a;
+            border-top: 8px solid #FF8C00;
+            position: relative;
+        }
+        
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .question-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: repeating-linear-gradient(
+                90deg,
+                #0a3d0a,
+                #0a3d0a 10px,
+                #FF8C00 10px,
+                #FF8C00 20px
+            );
+        }
+        
+        .question-card h3 {
+            margin-bottom: 1.2rem;
+            color: #0a3d0a;
+            font-size: 1.4rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px dashed #FF8C00;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.9rem;
+            margin: 1.2rem 0;
+        }
+        
+        .option {
+            padding: 1rem;
+            border: 3px solid #0a3d0a;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #f9f9f9;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .option:hover {
+            background-color: #fff4e6;
+            border-color: #FF8C00;
+            transform: translateX(5px);
+        }
+        
+        .option:hover::before {
+            left: 100%;
+        }
+        
+        .option.selected {
+            background-color: #FF8C00;
+            border-color: #0a3d0a;
+            color: white;
+            box-shadow: 0 4px 8px rgba(10, 61, 10, 0.3);
+        }
+        
+        .option.correct {
+            background-color: #0a3d0a;
+            border-color: #0a3d0a;
+            color: white;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 95% center;
+        }
+        
+        .option.incorrect {
+            background-color: #8B0000;
+            border-color: #8B0000;
+            color: white;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 95% center;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(to right, #0a3d0a, #1e6b1e);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 0 #063106;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
+            transition: left 0.7s;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(to right, #1e6b1e, #0a3d0a);
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #063106;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #063106;
+        }
+        
+        .btn:disabled {
+            background: linear-gradient(to right, #666, #888);
+            box-shadow: 0 6px 0 #444;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn:disabled:hover::before {
+            left: -100%;
+        }
+        
+        .results-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-top: 2rem;
+            display: none;
+            border: 5px solid #FF8C00;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 140, 0, 0.1) 20px, transparent 20px),
+                radial-gradient(circle at 90% 80%, rgba(10, 61, 10, 0.1) 20px, transparent 20px);
+            background-size: 60px 60px;
+        }
+        
+        .results-container h2 {
+            color: #0a3d0a;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            border-bottom: 3px solid #FF8C00;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        .score-display {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #FF8C00;
+            margin: 2rem 0;
+            text-shadow: 3px 3px 0 #0a3d0a;
+            background-color: #0a3d0a;
+            padding: 1rem;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+            border: 8px solid #FF8C00;
+            box-shadow: 0 0 0 8px #0a3d0a;
+        }
+        
+        .correct-answers {
+            color: #0a3d0a;
+            font-weight: bold;
+            font-size: 1.2rem;
+            background-color: rgba(10, 61, 10, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .incorrect-answers {
+            color: #8B0000;
+            font-weight: bold;
+            font-size: 1.2rem;
+            background-color: rgba(139, 0, 0, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(to right, #FF8C00, #FFA500);
+            width: auto;
+            margin: 2rem auto 1rem;
+            padding: 1rem 3rem;
+            box-shadow: 0 6px 0 #cc7000;
+        }
+        
+        .restart-btn:hover {
+            background: linear-gradient(to right, #FFA500, #FF8C00);
+            box-shadow: 0 9px 0 #cc7000;
+        }
+        
+        .restart-btn:active {
+            box-shadow: 0 3px 0 #cc7000;
+        }
+        
+        footer {
+            background-color: #0a3d0a;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            border-top: 5px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                #FF8C00 10px,
+                #FF8C00 20px
+            );
+        }
+        
+        .counter {
+            display: inline-block;
+            background-color: #FF8C00;
+            color: #0a3d0a;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            margin-top: 1rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border: 3px solid #0a3d0a;
+            box-shadow: 0 4px 0 rgba(10, 61, 10, 0.5);
+        }
+        
+        .counter span {
+            color: white;
+            background-color: #0a3d0a;
+            padding: 0.2rem 0.6rem;
+            border-radius: 50%;
+            margin-left: 0.3rem;
+        }
+        
+        /* Estilo para el marcador de preguntas */
+        .question-counter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+        }
+        
+        .question-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #ddd;
+            border: 2px solid #0a3d0a;
+            transition: all 0.3s;
+        }
+        
+        .question-dot.active {
+            background-color: #FF8C00;
+            transform: scale(1.2);
+        }
+        
+        .question-dot.answered {
+            background-color: #0a3d0a;
+        }
+        
+        /* Animación para el gol */
+        @keyframes goalAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .goal {
+            animation: goalAnimation 0.5s ease-in-out 3;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem 1rem;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .question-card {
+                padding: 1.2rem;
+            }
+            
+            .score-display {
+                width: 120px;
+                height: 120px;
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚽ Cuestionario de Fútbol ⚽</h1>
+        <p>Pon a prueba tus conocimientos sobre fútbol, su historia y el Mundial 2026</p>
+        <div class="counter">Pregunta: <span id="current-question">1</span> de 5</div>
+        
+        <div class="question-counter" id="question-dots">
+            <!-- Los puntos se generarán con JavaScript -->
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="info-box">
+            <p><strong>¡Bienvenido al campo de juego!</strong> Responde las 5 preguntas seleccionando una opción en cada una. Al finalizar, haz clic en "Ver resultados" para ver tu puntuación.</p>
+            <p>Cada vez que recargues la página, aparecerán 5 preguntas diferentes de un total de 20.</p>
+            <p style="margin-top: 10px; font-size: 0.9em; color: #FF8C00; font-weight: bold;">🎯 ¡Demuestra que eres un experto en fútbol! 🎯</p>
+        </div>
+        
+        <div id="quiz-container"></div>
+        
+        <button id="submit-btn" class="btn">Ver resultados finales</button>
+        
+        <div id="results-container" class="results-container">
+            <h2>Resultados del Partido</h2>
+            <div class="score-display"><span id="score">0</span>/5</div>
+            <p>Goles (correctas): <span id="correct-count" class="correct-answers">0</span></p>
+            <p>Faltas (incorrectas): <span id="incorrect-count" class="incorrect-answers">0</span></p>
+            <p id="result-message" style="margin-top: 1.5rem; font-size: 1.1rem;"></p>
+            <button id="restart-btn" class="btn restart-btn">Jugar otra vez</button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Cuestionario de Fútbol - Historia y Mundial 2026</p>
+        <p>© 2023 - Desarrollado con pasión por el fútbol</p>
+    </footer>
+
+    <script>
+        // Base de datos de preguntas
+        const questionBank = [
+            {
+                question: "¿En qué año se jugó la primera Copa del Mundo de fútbol?",
+                options: ["1924", "1930", "1938", "1950"],
+                correct: 1
+            },
+            {
+                question: "¿Qué país ha ganado más Copas del Mundo?",
+                options: ["Alemania", "Italia", "Argentina", "Brasil"],
+                correct: 3
+            },
+            {
+                question: "¿Dónde se celebrará la final del Mundial 2026?",
+                options: ["Los Ángeles", "Miami", "Nueva York", "Toronto"],
+                correct: 2
+            },
+            {
+                question: "¿Qué jugador tiene el récord de más goles en la historia de los Mundiales?",
+                options: ["Pelé", "Ronaldo", "Miroslav Klose", "Gerd Müller"],
+                correct: 2
+            },
+            {
+                question: "¿Qué país organizó el primer Mundial en 1930?",
+                options: ["Uruguay", "Brasil", "Francia", "Italia"],
+                correct: 0
+            },
+            {
+                question: "¿Cuántas selecciones participarán en el Mundial 2026?",
+                options: ["32", "40", "48", "64"],
+                correct: 2
+            },
+            {
+                question: "¿Qué selección ganó el Mundial de 2018 en Rusia?",
+                options: ["Croacia", "Francia", "Bélgica", "Inglaterra"],
+                correct: 1
+            },
+            {
+                question: "¿Qué país fue campeón del primer Mundial femenino en 1991?",
+                options: ["Estados Unidos", "Noruega", "Alemania", "Suecia"],
+                correct: 0
+            },
+            {
+                question: "¿En qué año se introdujo la tarjeta roja en el fútbol?",
+                options: ["1958", "1966", "1970", "1978"],
+                correct: 2
+            },
+            {
+                question: "¿Qué país ha sido subcampeón del Mundo en más ocasiones sin haber ganado nunca?",
+                options: ["Hungría", "Checoslovaquia", "Países Bajos", "Suecia"],
+                correct: 2
+            },
+            {
+                question: "¿Cuántas ciudades estadounidenses albergarán partidos del Mundial 2026?",
+                options: ["8", "11", "14", "16"],
+                correct: 1
+            },
+            {
+                question: "¿Quién es el máximo goleador en la historia de la Champions League?",
+                options: ["Lionel Messi", "Cristiano Ronaldo", "Robert Lewandowski", "Karim Benzema"],
+                correct: 1
+            },
+            {
+                question: "¿Qué país inventó el fútbol moderno?",
+                options: ["Italia", "Brasil", "Inglaterra", "Alemania"],
+                correct: 2
+            },
+            {
+                question: "¿Qué tres países organizarán conjuntamente el Mundial 2026?",
+                options: ["EE.UU., Canadá y México", "EE.UU., México y Brasil", "Canadá, México y Argentina", "EE.UU., Canadá y Costa Rica"],
+                correct: 0
+            },
+            {
+                question: "¿Cuál es el único jugador que ha ganado 3 Copas del Mundo?",
+                options: ["Pelé", "Diego Maradona", "Lionel Messi", "Zinedine Zidane"],
+                correct: 0
+            },
+            {
+                question: "¿Qué país ganó el Mundial de 2014 en Brasil?",
+                options: ["Argentina", "Brasil", "Alemania", "Países Bajos"],
+                correct: 2
+            },
+            {
+                question: "¿En qué estadio se jugará la final del Mundial 2026?",
+                options: ["SoFi Stadium", "MetLife Stadium", "Rose Bowl", "Azteca"],
+                correct: 1
+            },
+            {
+                question: "¿Cuál fue el primer país de África en llegar a semifinales de un Mundial?",
+                options: ["Camerún", "Senegal", "Marruecos", "Ghana"],
+                correct: 2
+            },
+            {
+                question: "¿Quién es el máximo goleador histórico de la selección argentina?",
+                options: ["Diego Maradona", "Gabriel Batistuta", "Sergio Agüero", "Lionel Messi"],
+                correct: 3
+            },
+            {
+                question: "¿En qué año se jugará el Mundial 2026?",
+                options: ["2025", "2026", "2027", "2028"],
+                correct: 1
+            }
+        ];
+
+        // Variables globales
+        let selectedQuestions = [];
+        let userAnswers = [];
+        let currentQuestionIndex = 0;
+        let quizCompleted = false;
+
+        // Función para seleccionar 5 preguntas aleatorias
+        function selectRandomQuestions() {
+            // Mezclar el array de preguntas
+            const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+            // Seleccionar las primeras 5
+            selectedQuestions = shuffled.slice(0, 5);
+        }
+
+        // Función para crear los puntos indicadores de preguntas
+        function createQuestionDots() {
+            const dotsContainer = document.getElementById('question-dots');
+            dotsContainer.innerHTML = '';
+            
+            for (let i = 0; i < 5; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'question-dot';
+                dot.id = `dot-${i}`;
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        // Función para actualizar los puntos indicadores
+        function updateQuestionDots() {
+            for (let i = 0; i < 5; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                dot.classList.remove('active', 'answered');
+                
+                if (i === currentQuestionIndex) {
+                    dot.classList.add('active');
+                }
+                
+                if (userAnswers[i] !== undefined) {
+                    dot.classList.add('answered');
+                }
+            }
+        }
+
+        // Función para mostrar la pregunta actual
+        function displayQuestion(index) {
+            const quizContainer = document.getElementById('quiz-container');
+            const currentQuestion = selectedQuestions[index];
+            
+            // Actualizar el contador de preguntas
+            document.getElementById('current-question').textContent = index + 1;
+            
+            // Actualizar los puntos indicadores
+            updateQuestionDots();
+            
+            // Crear el HTML para la pregunta
+            let questionHTML = `
+                <div class="question-card" id="question-${index}">
+                    <h3>Pregunta ${index + 1}: ${currentQuestion.question}</h3>
+                    <div class="options-container">
+            `;
+            
+            // Añadir las opciones de respuesta
+            currentQuestion.options.forEach((option, optionIndex) => {
+                const isSelected = userAnswers[index] === optionIndex;
+                const selectionClass = isSelected ? 'selected' : '';
+                questionHTML += `
+                    <div class="option ${selectionClass}" data-index="${optionIndex}" onclick="selectAnswer(${index}, ${optionIndex})">
+                        ${option}
+                    </div>
+                `;
+            });
+            
+            questionHTML += `</div></div>`;
+            
+            // Si ya respondió antes, mostrar si es correcta o incorrecta
+            if (userAnswers[index] !== undefined && quizCompleted) {
+                const optionDivs = document.querySelectorAll(`#question-${index} .option`);
+                optionDivs.forEach((div, i) => {
+                    if (i === currentQuestion.correct) {
+                        div.classList.add('correct');
+                    } else if (i === userAnswers[index] && i !== currentQuestion.correct) {
+                        div.classList.add('incorrect');
+                    }
+                });
+            }
+            
+            // Insertar la pregunta en el contenedor
+            if (index === 0) {
+                quizContainer.innerHTML = questionHTML;
+            } else {
+                const existingQuestion = document.getElementById(`question-${index}`);
+                if (existingQuestion) {
+                    existingQuestion.outerHTML = questionHTML;
+                } else {
+                    quizContainer.innerHTML += questionHTML;
+                }
+            }
+            
+            // Desplazar a la pregunta actual
+            document.getElementById(`question-${index}`).scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+
+        // Función para seleccionar una respuesta
+        window.selectAnswer = function(questionIndex, optionIndex) {
+            if (quizCompleted) return;
+            
+            userAnswers[questionIndex] = optionIndex;
+            
+            // Actualizar la visualización de la pregunta
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            options.forEach((option, i) => {
+                option.classList.remove('selected');
+                if (i === optionIndex) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            // Actualizar los puntos indicadores
+            updateQuestionDots();
+            
+            // Avanzar automáticamente a la siguiente pregunta después de un breve retraso
+            setTimeout(() => {
+                if (questionIndex < 4) {
+                    currentQuestionIndex = questionIndex + 1;
+                    displayQuestion(currentQuestionIndex);
+                }
+            }, 300);
+        };
+
+        // Función para calcular y mostrar resultados
+        function showResults() {
+            let correctCount = 0;
+            
+            // Calcular respuestas correctas
+            selectedQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.correct) {
+                    correctCount++;
+                }
+            });
+            
+            // Actualizar el display de resultados
+            document.getElementById('score').textContent = correctCount;
+            document.getElementById('correct-count').textContent = correctCount;
+            document.getElementById('incorrect-count').textContent = 5 - correctCount;
+            
+            // Añadir animación de gol si todas las respuestas son correctas
+            if (correctCount === 5) {
+                document.getElementById('score').classList.add('goal');
+            }
+            
+            // Mostrar mensaje según la puntuación
+            const resultMessage = document.getElementById('result-message');
+            if (correctCount === 5) {
+                resultMessage.textContent = "¡Perfecto! Eres un verdadero experto en fútbol ⭐⭐⭐";
+                resultMessage.style.color = "#FF8C00";
+                resultMessage.style.fontWeight = "bold";
+            } else if (correctCount >= 3) {
+                resultMessage.textContent = "¡Buen trabajo! Tienes buen conocimiento futbolístico 👍";
+                resultMessage.style.color = "#0a3d0a";
+            } else {
+                resultMessage.textContent = "¡Sigue practicando! El fútbol tiene mucha historia que aprender 💪";
+                resultMessage.style.color = "#8B0000";
+            }
+            
+            // Mostrar contenedor de resultados
+            document.getElementById('results-container').style.display = 'block';
+            
+            // Desplazar a los resultados
+            document.getElementById('results-container').scrollIntoView({
+                behavior: 'smooth'
+            });
+            
+            // Mostrar respuestas correctas/incorrectas
+            selectedQuestions.forEach((_, index) => {
+                displayQuestion(index);
+            });
+            
+            quizCompleted = true;
+            document.getElementById('submit-btn').disabled = true;
+        }
+
+        // Función para reiniciar el cuestionario
+        function restartQuiz() {
+            // Seleccionar nuevas preguntas aleatorias
+            selectRandomQuestions();
+            
+            // Reiniciar variables
+            userAnswers = [];
+            currentQuestionIndex = 0;
+            quizCompleted = false;
+            
+            // Ocultar resultados
+            document.getElementById('results-container').style.display = 'none';
+            
+            // Crear puntos indicadores
+            createQuestionDots();
+            
+            // Mostrar primera pregunta
+            displayQuestion(0);
+            
+            // Habilitar botón de enviar
+            document.getElementById('submit-btn').disabled = false;
+        }
+
+        // Inicializar el cuestionario al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seleccionar preguntas aleatorias
+            selectRandomQuestions();
+            
+            // Crear puntos indicadores
+            createQuestionDots();
+            
+            // Mostrar la primera pregunta
+            displayQuestion(0);
+            
+            // Configurar botón de enviar
+            document.getElementById('submit-btn').addEventListener('click', showResults);
+            
+            // Configurar botón de reinicio
+            document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+        });
+    </script>
+</body>
+</html>

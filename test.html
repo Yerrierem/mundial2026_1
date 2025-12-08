@@ -1,10 +1,323 @@
-<!-- Solo para test - guarda como test.html -->
-<a-scene mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: true;">
-  <a-camera></a-camera>
-</a-scene>
-<script>
-  document.querySelector('a-scene').addEventListener('targetFound', (e) => {
-    const idx = e.detail.targetEl.getAttribute('mindar-image-target').targetIndex;
-    alert(`¡Target ${idx} detectado!`);
-  });
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Test de Modelos 3D (Animación por Nombre de Clip)</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; }
+        a-scene { width: 100%; height: 100vh; }
+        
+        /* Info panel simple */
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 1000;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <strong>Animación GLTF/GLB</strong><br>
+        <span id="status">Cargando...</span>
+    </div>
+
+    <a-scene background="color: #ECECEC">
+        
+        <a-assets>
+            <a-asset-item id="modeloMexicoEstatico" src="./assets/Mexico.glb"></a-asset-item>
+            <a-asset-item id="modeloMexicoAnimado" src="./assets/MexicoA.glb"></a-asset-item>
+        </a-assets>
+
+        <a-camera position="0 1.6 4" wasd-controls look-controls></a-camera>
+
+        <a-entity light="type: ambient; color: #FFF; intensity: 0.8"></a-entity>
+        <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="5 10 5"></a-entity>
+        
+        <a-text value="Modelo Estático (Mexico.glb)" color="#000" align="center" position="-2 2 0" scale="1.5 1.5 1.5"></a-text>
+        <a-text value="Modelo Animado (MexicoA.glb)" color="#000" align="center" position="2 2 0" scale="1.5 1.5 1.5"></a-text>
+
+        <a-gltf-model
+            id="test-estatico"
+            src="#modeloMexicoEstatico"
+            position="-2 0 0"       
+            scale="0.5 0.5 0.5"     
+            rotation="0 45 0">
+        </a-gltf-model>
+
+        <!-- Modelo animado con nuestro componente personalizado -->
+        <a-entity
+            id="test-animado"
+            gltf-model="#modeloMexicoAnimado"
+            custom-animation-mixer="clipIndex: 0; autoPlay: true"
+            position="2 0 0"        
+            scale="0.5 0.5 0.5"     
+            rotation="0 -45 0">
+        </a-entity>
+
+    </a-scene>
+
+    <script>
+        // ==============================================
+        // COMPONENTE PERSONALIZADO PARA ANIMACIONES GLTF
+        // ==============================================
+        AFRAME.registerComponent('custom-animation-mixer', {
+            schema: {
+                clipIndex: { type: 'int', default: 0 },    // Índice de la animación a reproducir
+                clipName: { type: 'string', default: '' }, // O nombre específico
+                autoPlay: { type: 'boolean', default: true }, // Reproducir automáticamente
+                loop: { type: 'boolean', default: true },   // Repetir animación
+                timeScale: { type: 'number', default: 1 }   // Velocidad (1 = normal)
+            },
+            
+            init: function() {
+                console.log("🔧 Custom Animation Mixer inicializado");
+                
+                // Variables internas
+                this.mixer = null;
+                this.actions = [];
+                this.animations = [];
+                this.isPlaying = false;
+                
+                // Escuchar cuando el modelo GLTF se cargue
+                this.el.addEventListener('model-loaded', (e) => {
+                    console.log("✅ Modelo GLTF cargado");
+                    this.setupAnimations(e.detail.model);
+                });
+            },
+            
+            setupAnimations: function(model) {
+                console.log("🔄 Buscando animaciones en el modelo...");
+                
+                // Limpiar estado anterior
+                this.animations = [];
+                this.actions = [];
+                
+                // Buscar animaciones en TODOS los nodos del modelo
+                model.traverse((node) => {
+                    if (node.animations && node.animations.length > 0) {
+                        console.log(`🎭 Encontradas ${node.animations.length} animación(es) en nodo: "${node.name || 'sin nombre'}"`);
+                        
+                        // Guardar cada animación encontrada
+                        node.animations.forEach((clip, index) => {
+                            console.log(`   Clip ${index}: "${clip.name}" (${clip.duration.toFixed(2)}s)`);
+                            this.animations.push({
+                                name: clip.name,
+                                clip: clip,
+                                node: node
+                            });
+                        });
+                    }
+                });
+                
+                // Si encontramos animaciones
+                if (this.animations.length > 0) {
+                    // Crear el AnimationMixer de THREE.js
+                    this.mixer = new THREE.AnimationMixer(model);
+                    console.log("🎬 AnimationMixer creado");
+                    
+                    // Crear acciones para cada animación
+                    this.animations.forEach((anim) => {
+                        const action = this.mixer.clipAction(anim.clip);
+                        action.clipName = anim.name;
+                        this.actions.push(action);
+                    });
+                    
+                    // Actualizar estado en pantalla
+                    document.getElementById('status').innerHTML = 
+                        `✅ ${this.animations.length} animación(es) encontrada(s)`;
+                    document.getElementById('status').style.color = 'green';
+                    
+                    // Reproducir animación según configuración
+                    if (this.data.autoPlay) {
+                        this.playAnimation();
+                    }
+                    
+                } else {
+                    console.warn("⚠️ No se encontraron animaciones en el modelo GLTF");
+                    document.getElementById('status').innerHTML = 
+                        "⚠️ No se encontraron animaciones en el modelo";
+                    document.getElementById('status').style.color = 'orange';
+                }
+            },
+            
+            playAnimation: function(clipIndex = null) {
+                if (!this.mixer || this.actions.length === 0) {
+                    console.warn("No hay animaciones para reproducir");
+                    return;
+                }
+                
+                // Usar índice proporcionado o el de la configuración
+                const index = clipIndex !== null ? clipIndex : this.data.clipIndex;
+                
+                // Asegurarse de que el índice sea válido
+                if (index >= this.actions.length) {
+                    console.warn(`Índice ${index} fuera de rango. Usando 0.`);
+                    this.data.clipIndex = 0;
+                    this.playAnimation(0);
+                    return;
+                }
+                
+                // Detener todas las animaciones primero
+                this.stopAnimation();
+                
+                // Configurar y reproducir la animación seleccionada
+                const action = this.actions[index];
+                
+                // Configurar loop
+                if (this.data.loop) {
+                    action.setLoop(THREE.LoopRepeat, Infinity);
+                } else {
+                    action.setLoop(THREE.LoopOnce, 1);
+                }
+                
+                // Configurar velocidad
+                action.setEffectiveTimeScale(this.data.timeScale);
+                
+                // Reproducir
+                action.play();
+                this.isPlaying = true;
+                
+                console.log(`▶ Reproduciendo animación: "${action.clipName}"`);
+                document.getElementById('status').innerHTML = 
+                    `▶ Reproduciendo: "${action.clipName}"`;
+            },
+            
+            stopAnimation: function() {
+                if (!this.mixer) return;
+                
+                // Detener todas las acciones
+                this.actions.forEach(action => {
+                    action.stop();
+                });
+                
+                this.isPlaying = false;
+                console.log("⏸ Animación detenida");
+            },
+            
+            tick: function(time, delta) {
+                // ¡ESTO ES CLAVE! Actualizar el mixer en cada frame
+                if (this.mixer && this.isPlaying) {
+                    // Convertir delta de milisegundos a segundos
+                    const deltaSeconds = delta / 1000;
+                    // Actualizar el mixer con el tiempo transcurrido
+                    this.mixer.update(deltaSeconds);
+                }
+            },
+            
+            // Método para cambiar a una animación por nombre
+            playAnimationByName: function(clipName) {
+                if (!this.mixer) return;
+                
+                // Buscar la animación por nombre
+                const index = this.animations.findIndex(anim => anim.name === clipName);
+                
+                if (index !== -1) {
+                    this.playAnimation(index);
+                } else {
+                    console.warn(`No se encontró animación con nombre: "${clipName}"`);
+                    console.log("Animaciones disponibles:", this.animations.map(a => a.name));
+                }
+            },
+            
+            // Método público para verificar estado
+            getAnimationsInfo: function() {
+                return this.animations.map(anim => ({
+                    name: anim.name,
+                    duration: anim.clip.duration
+                }));
+            }
+        });
+        
+        // ==============================================
+        // CONTROL DESPUÉS DE QUE TODO SE CARGUE
+        // ==============================================
+        document.querySelector('a-scene').addEventListener('loaded', () => {
+            console.log("🚀 Escena de A-Frame cargada");
+            
+            const modeloAnimado = document.getElementById('test-animado');
+            const component = modeloAnimado.components['custom-animation-mixer'];
+            
+            // Después de 1 segundo, mostrar información de animaciones
+            setTimeout(() => {
+                if (component && component.getAnimationsInfo) {
+                    const info = component.getAnimationsInfo();
+                    if (info.length > 0) {
+                        console.log("📋 Información de animaciones disponibles:");
+                        info.forEach((anim, idx) => {
+                            console.log(`   ${idx}: "${anim.name}" (${anim.duration.toFixed(2)}s)`);
+                        });
+                        
+                        // Si hay más de una animación, podemos agregar controles
+                        if (info.length > 1) {
+                            const controlsDiv = document.createElement('div');
+                            controlsDiv.innerHTML = '<br><strong>Controles:</strong><br>';
+                            
+                            info.forEach((anim, idx) => {
+                                const btn = document.createElement('button');
+                                btn.textContent = `Anim ${idx}: ${anim.name}`;
+                                btn.style.margin = '2px';
+                                btn.style.padding = '3px 6px';
+                                btn.style.fontSize = '11px';
+                                btn.onclick = () => {
+                                    component.playAnimation(idx);
+                                };
+                                controlsDiv.appendChild(btn);
+                            });
+                            
+                            document.getElementById('info').appendChild(controlsDiv);
+                        }
+                    }
+                }
+            }, 1000);
+        });
+
+        // Controles simples con teclado
+        document.addEventListener('keydown', (e) => {
+            const modeloAnimado = document.getElementById('test-animado');
+            const component = modeloAnimado.components['custom-animation-mixer'];
+            
+            if (!component) return;
+            
+            switch(e.key) {
+                case ' ': // Espacio: play/pause
+                    if (component.isPlaying) {
+                        component.stopAnimation();
+                        document.getElementById('status').innerHTML = "⏸ Pausado";
+                    } else {
+                        component.playAnimation();
+                    }
+                    break;
+                    
+                case '1': // Tecla 1: primera animación
+                case '2': // Tecla 2: segunda animación
+                case '3': // etc...
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    const index = parseInt(e.key) - 1;
+                    component.playAnimation(index);
+                    break;
+                    
+                case 'r': // Tecla R: reiniciar
+                case 'R':
+                    component.playAnimation(component.data.clipIndex);
+                    break;
+            }
+        });
+
+        console.log("🎮 Controles: ESPACIO (play/pause), 1-9 (seleccionar animación), R (reiniciar)");
+
+    </script>
+</body>
+</html>
