@@ -3,15 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Realidad Aumentada - Modelo Animado y Botón</title>
+    <title>Realidad Aumentada - QR + Modelos 3D</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     
     <style>
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
+            font-family: Arial, Helvetica, sans-serif;
         }
         
         .instrucciones {
@@ -37,7 +37,7 @@
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 10px 15px;
+            padding: 12px 20px;
             font-size: 16px;
             background-color: #007bff;
             color: white;
@@ -45,81 +45,152 @@
             border-radius: 5px;
             cursor: pointer;
             z-index: 999;
-            display: none; /* Inicialmente oculto */
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+        }
+
+        #boton-animacion:hover {
+            background-color: #0056b3;
+        }
+
+        /* Indicador del país activo */
+        #pais-activo {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 8px 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 5px;
+            z-index: 999;
+            display: none;
+            font-size: 14px;
+        }
+
+        /* Overlay para el escáner QR */
+        #qr-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        #qr-video {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border: 3px solid white;
+            border-radius: 10px;
+        }
+
+        #qr-result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        #cerrar-qr {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #btn-iniciar-qr {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 999;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 <body>
     <div class="instrucciones" id="instrucciones">
-        Enfoca la cámara hacia una bandera para ver el contenido de Realidad Aumentada.
+        Presiona el botón "Escanear QR" para comenzar
     </div>
 
+    <div id="pais-activo"></div>
     <button id="boton-animacion">▶️ Ver Animación</button>
+    <button id="btn-iniciar-qr">📷 Escanear QR</button>
+
+    <!-- Overlay del escáner QR -->
+    <div id="qr-overlay" style="display: none;">
+        <button id="cerrar-qr">✖ Cerrar</button>
+        <video id="qr-video" playsinline></video>
+        <div id="qr-result">Esperando QR...</div>
+    </div>
 
     <a-scene
-        mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: true;"
         color-space="sRGB"
         renderer="colorManagement: true; physicallyCorrectLights: true;"
         vr-mode-ui="enabled: false"
         device-orientation-permission-ui="enabled: true"
     >
         <a-assets>
+            <!-- Modelos estáticos -->
             <a-asset-item id="modeloMexicoEstatico" src="./assets/Mexico.glb"></a-asset-item>
+            <a-asset-item id="modeloEstadosUnidosEstatico" src="./assets/EstadosUnidos.glb"></a-asset-item>
+            <a-asset-item id="modeloCanadaEstatico" src="./assets/Canada.glb"></a-asset-item>
+            <a-asset-item id="modeloArgentinaEstatico" src="./assets/Argentina.glb"></a-asset-item>
+            <a-asset-item id="modeloBrasilEstatico" src="./assets/Brasil.glb"></a-asset-item>
+            <a-asset-item id="modeloUruguayEstatico" src="./assets/Uruguay.glb"></a-asset-item>
+            <a-asset-item id="modeloColombiaEstatico" src="./assets/Colombia.glb"></a-asset-item>
+            <a-asset-item id="modeloJaponEstatico" src="./assets/Japon.glb"></a-asset-item>
+            <a-asset-item id="modeloCoreaDelSurEstatico" src="./assets/CoreaDelSur.glb"></a-asset-item>
+            <a-asset-item id="modeloAustraliaEstatico" src="./assets/Australia.glb"></a-asset-item>
+            <a-asset-item id="modeloInglaterraEstatico" src="./assets/Inglaterra.glb"></a-asset-item>
+            <a-asset-item id="modeloFranciaEstatico" src="./assets/Francia.glb"></a-asset-item>
+
+            <!-- Modelos animados -->
             <a-asset-item id="modeloMexicoAnimado" src="./assets/MexicoA.glb"></a-asset-item>
+            <a-asset-item id="modeloEstadosUnidosAnimado" src="./assets/EstadosUnidosA.glb"></a-asset-item>
+            <a-asset-item id="modeloCanadaAnimado" src="./assets/CanadaA.glb"></a-asset-item>
+            <a-asset-item id="modeloArgentinaAnimado" src="./assets/ArgentinaA.glb"></a-asset-item>
+            <a-asset-item id="modeloBrasilAnimado" src="./assets/BrasilA.glb"></a-asset-item>
+            <a-asset-item id="modeloUruguayAnimado" src="./assets/UruguayA.glb"></a-asset-item>
+            <a-asset-item id="modeloColombiaAnimado" src="./assets/ColombiaA.glb"></a-asset-item>
+            <a-asset-item id="modeloJaponAnimado" src="./assets/JaponA.glb"></a-asset-item>
+            <a-asset-item id="modeloCoreaDelSurAnimado" src="./assets/CoreaDelSurA.glb"></a-asset-item>
+            <a-asset-item id="modeloAustraliaAnimado" src="./assets/AustraliaA.glb"></a-asset-item>
+            <a-asset-item id="modeloInglaterraAnimado" src="./assets/InglaterraA.glb"></a-asset-item>
+            <a-asset-item id="modeloFranciaAnimado" src="./assets/FranciaA.glb"></a-asset-item>
         </a-assets>
 
-        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-camera position="0 1.6 0" look-controls="enabled: true" cursor="rayOrigin: mouse"></a-camera>
 
-        <a-entity id="target-argentina" mindar-image-target="targetIndex: 0">
-            <a-text 
-                id="texto-argentina"
-                value="ARGENTINA"
-                color="blue"
-                align="center"
-                visible="false"
-                position="0 0.05 0" 
-                scale="2 2 2"
-                width="5">
-            </a-text>
-        </a-entity>
-
-        <a-entity id="target-mexico" mindar-image-target="targetIndex: 1">
-            <a-text 
-                id="texto-mexico"
-                value="MEXICO"
-                color="red"
-                align="center"
-                visible="false"
-                position="0 0.05 0" 
-                scale="2 2 2"
-                width="5">
-            </a-text>
-            
-            <a-gltf-model
-                id="modelo-estatico"
-                src="#modeloMexicoEstatico"
-                position="0 0 0"      
-                scale="0.2 0.2 0.2"      
-                rotation="0 0 0"
-                visible="false">
-            </a-gltf-model>
-
-            <!-- Modelo animado con componente personalizado -->
-            <a-entity
-                id="modelo-animado"
-                gltf-model="#modeloMexicoAnimado"
-                custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat"
-                position="0 0 0"      
-                scale="0.2 0.2 0.2"
-                rotation="0 0 0"
-                visible="false">
-            </a-entity>
-        </a-entity>
+        <!-- Contenedor para los modelos (inicialmente vacío) -->
+        <a-entity id="contenedor-modelos" position="0 0 -2"></a-entity>
         
         <a-entity light="type: ambient; color: #FFF; intensity: 0.9"></a-entity>
         <a-entity light="type: directional; color: #FFF; intensity: 0.7" position="0 1 1"></a-entity>
     </a-scene>
+
+    <!-- Incluir biblioteca para leer QR codes -->
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
 
     <script>
         // ==============================================
@@ -235,156 +306,257 @@
                     const deltaSeconds = delta / 1000;
                     this.mixer.update(deltaSeconds);
                 }
-            },
-            
-            playAnimationByName: function(clipName) {
-                if (!this.mixer) return;
-                
-                const index = this.animations.findIndex(anim => anim.name === clipName);
-                
-                if (index !== -1) {
-                    this.playAnimation(index);
-                } else {
-                    console.warn(`No se encontró animación con nombre: "${clipName}"`);
-                }
-            },
-            
-            getAnimationsInfo: function() {
-                return this.animations.map(anim => ({
-                    name: anim.name,
-                    duration: anim.clip.duration
-                }));
             }
         });
 
-        // Obtener elementos
-        const textoMexico = document.getElementById("texto-mexico");
-        const textoArgentina = document.getElementById("texto-argentina");
-        const modeloEstatico = document.getElementById("modelo-estatico");
-        const modeloAnimado = document.getElementById("modelo-animado");
+        // Elementos del DOM
         const instrucciones = document.getElementById("instrucciones");
         const botonAnimacion = document.getElementById("boton-animacion");
+        const paisActivo = document.getElementById("pais-activo");
+        const btnIniciarQR = document.getElementById("btn-iniciar-qr");
+        const qrOverlay = document.getElementById("qr-overlay");
+        const cerrarQR = document.getElementById("cerrar-qr");
+        const qrVideo = document.getElementById("qr-video");
+        const qrResult = document.getElementById("qr-result");
+        const contenedorModelos = document.getElementById("contenedor-modelos");
         
+        // Variables de estado
+        let modeloEstaticoActual = null;
+        let modeloAnimadoActual = null;
+        let textoActual = null;
         let isAnimated = false;
-        
-        console.log("🔍 Configuración de índices:");
-        console.log("- México (targetIndex: 1)");
-        console.log("- Argentina (targetIndex: 0)");
+        let scanning = false;
+        let videoStream = null;
 
-        // --- LÓGICA PARA ARGENTINA (ÍNDICE 0) ---
-        const targetArgentina = document.getElementById("target-argentina");
-        if (targetArgentina) {
-            targetArgentina.addEventListener("targetFound", () => {
-                console.log("✅ Argentina detectada (índice 0) → Mostrando 'ARGENTINA'");
-                if (textoArgentina) {
-                    textoArgentina.setAttribute("visible", "true");
-                    textoArgentina.setAttribute("animation", {
-                        property: "scale",
-                        from: "2 2 2",
-                        to: "2.5 2.5 2.5",
-                        dir: "alternate",
-                        loop: true,
-                        dur: 1500,
-                        easing: "easeInOutSine"
-                    });
-                }
-                instrucciones.style.display = "none";
-            });
+        // Configuración de todos los países
+        const paises = [
+            { id: 'mexico', nombre: 'MÉXICO', qrText: 'MEXICO', 
+              modeloEstatico: '#modeloMexicoEstatico', modeloAnimado: '#modeloMexicoAnimado', color: '#CE1126' },
+            { id: 'estadosunidos', nombre: 'ESTADOS UNIDOS', qrText: 'USA', 
+              modeloEstatico: '#modeloEstadosUnidosEstatico', modeloAnimado: '#modeloEstadosUnidosAnimado', color: '#B22234' },
+            { id: 'canada', nombre: 'CANADÁ', qrText: 'CANADA', 
+              modeloEstatico: '#modeloCanadaEstatico', modeloAnimado: '#modeloCanadaAnimado', color: '#FF0000' },
+            { id: 'argentina', nombre: 'ARGENTINA', qrText: 'ARGENTINA', 
+              modeloEstatico: '#modeloArgentinaEstatico', modeloAnimado: '#modeloArgentinaAnimado', color: '#75AADB' },
+            { id: 'brasil', nombre: 'BRASIL', qrText: 'BRASIL', 
+              modeloEstatico: '#modeloBrasilEstatico', modeloAnimado: '#modeloBrasilAnimado', color: '#009C3B' },
+            { id: 'uruguay', nombre: 'URUGUAY', qrText: 'URUGUAY', 
+              modeloEstatico: '#modeloUruguayEstatico', modeloAnimado: '#modeloUruguayAnimado', color: '#0038A8' },
+            { id: 'colombia', nombre: 'COLOMBIA', qrText: 'COLOMBIA', 
+              modeloEstatico: '#modeloColombiaEstatico', modeloAnimado: '#modeloColombiaAnimado', color: '#FCD116' },
+            { id: 'japon', nombre: 'JAPÓN', qrText: 'JAPON', 
+              modeloEstatico: '#modeloJaponEstatico', modeloAnimado: '#modeloJaponAnimado', color: '#BC002D' },
+            { id: 'coreadelsur', nombre: 'COREA DEL SUR', qrText: 'KOREA', 
+              modeloEstatico: '#modeloCoreaDelSurEstatico', modeloAnimado: '#modeloCoreaDelSurAnimado', color: '#003478' },
+            { id: 'australia', nombre: 'AUSTRALIA', qrText: 'AUSTRALIA', 
+              modeloEstatico: '#modeloAustraliaEstatico', modeloAnimado: '#modeloAustraliaAnimado', color: '#012169' },
+            { id: 'inglaterra', nombre: 'INGLATERRA', qrText: 'ENGLAND', 
+              modeloEstatico: '#modeloInglaterraEstatico', modeloAnimado: '#modeloInglaterraAnimado', color: '#C8102E' },
+            { id: 'francia', nombre: 'FRANCIA', qrText: 'FRANCE', 
+              modeloEstatico: '#modeloFranciaEstatico', modeloAnimado: '#modeloFranciaAnimado', color: '#002395' }
+        ];
 
-            targetArgentina.addEventListener("targetLost", () => {
-                console.log("❌ Argentina perdida");
-                if (textoArgentina) {
-                    textoArgentina.setAttribute("visible", "false");
-                    textoArgentina.removeAttribute("animation");
-                }
-                instrucciones.style.display = "block";
-            });
+        console.log("📋 Configuración de países para QR:");
+        paises.forEach(p => console.log(`- ${p.nombre}: Texto QR = "${p.qrText}"`));
+
+        // Función para ocultar todos los modelos y textos
+        function ocultarTodo() {
+            // Limpiar contenedor de modelos
+            while (contenedorModelos.firstChild) {
+                contenedorModelos.removeChild(contenedorModelos.firstChild);
+            }
+            
+            modeloEstaticoActual = null;
+            modeloAnimadoActual = null;
+            textoActual = null;
+            isAnimated = false;
+            botonAnimacion.style.display = 'none';
+            paisActivo.style.display = 'none';
+            instrucciones.style.display = 'block';
         }
 
-        // --- LÓGICA PARA MÉXICO (ÍNDICE 1) ---
-        const targetMexico = document.getElementById("target-mexico");
-        if (targetMexico) {
-            targetMexico.addEventListener("targetFound", () => {
-                console.log("✅ México detectado (índice 1) → Mostrando contenido");
-                
-                if (textoMexico) {
-                    textoMexico.setAttribute("visible", "true");
-                    textoMexico.setAttribute("animation", {
-                        property: "position",
-                        from: "0 0.05 0",
-                        to: "0 0.45 0",
-                        dir: "alternate",
-                        loop: true,
-                        dur: 2000,
-                        easing: "easeInOutSine"
-                    });
-                }
-                
-                if (!isAnimated) {
-                    modeloEstatico.setAttribute("visible", "true");
-                } else {
-                    modeloAnimado.setAttribute("visible", "true");
-                    // Iniciar la animación cuando se detecta el target
-                    const animComponent = modeloAnimado.components['custom-animation-mixer'];
-                    if (animComponent && animComponent.isPlaying === false) {
-                        animComponent.playAnimation();
-                    }
-                }
-                
-                botonAnimacion.style.display = "block";
-                instrucciones.style.display = "none";
+        // Función para mostrar modelo de un país
+        function mostrarPais(pais) {
+            ocultarTodo();
+            
+            console.log(`🎯 Mostrando modelo para: ${pais.nombre}`);
+            
+            // Crear texto
+            const texto = document.createElement('a-text');
+            texto.setAttribute('value', pais.nombre);
+            texto.setAttribute('color', pais.color);
+            texto.setAttribute('align', 'center');
+            texto.setAttribute('position', '0 0.5 0');
+            texto.setAttribute('scale', '2 2 2');
+            texto.setAttribute('width', '5');
+            texto.setAttribute('visible', 'true');
+            
+            // Animar texto
+            texto.setAttribute('animation', {
+                property: 'position',
+                from: '0 0.5 0',
+                to: '0 0.9 0',
+                dir: 'alternate',
+                loop: true,
+                dur: 2000,
+                easing: 'easeInOutSine'
             });
-
-            targetMexico.addEventListener("targetLost", () => {
-                console.log("❌ México perdido");
-                
-                if (textoMexico) {
-                    textoMexico.setAttribute("visible", "false");
-                    textoMexico.removeAttribute("animation");
-                    textoMexico.setAttribute("position", "0 0.05 0");
-                }
-                
-                modeloEstatico.setAttribute("visible", "false");
-                modeloAnimado.setAttribute("visible", "false");
-                botonAnimacion.style.display = "none";
-
-                instrucciones.style.display = "block";
-            });
+            
+            contenedorModelos.appendChild(texto);
+            textoActual = texto;
+            
+            // Crear modelo estático
+            const modeloEstatico = document.createElement('a-gltf-model');
+            modeloEstatico.setAttribute('src', pais.modeloEstatico);
+            modeloEstatico.setAttribute('position', '0 0 0');
+            modeloEstatico.setAttribute('scale', '0.2 0.2 0.2');
+            modeloEstatico.setAttribute('rotation', '0 0 0');
+            modeloEstatico.setAttribute('visible', 'true');
+            
+            contenedorModelos.appendChild(modeloEstatico);
+            modeloEstaticoActual = modeloEstatico;
+            
+            // Crear modelo animado (inicialmente oculto)
+            const modeloAnimado = document.createElement('a-entity');
+            modeloAnimado.setAttribute('gltf-model', pais.modeloAnimado);
+            modeloAnimado.setAttribute('custom-animation-mixer', 'clipIndex: 0; autoPlay: false; loop: repeat');
+            modeloAnimado.setAttribute('position', '0 0 0');
+            modeloAnimado.setAttribute('scale', '0.2 0.2 0.2');
+            modeloAnimado.setAttribute('rotation', '0 0 0');
+            modeloAnimado.setAttribute('visible', 'false');
+            
+            contenedorModelos.appendChild(modeloAnimado);
+            modeloAnimadoActual = modeloAnimado;
+            
+            // Mostrar botón e indicador
+            botonAnimacion.style.display = 'block';
+            paisActivo.style.display = 'block';
+            paisActivo.textContent = `🇲🇽 ${pais.nombre}`;
+            instrucciones.style.display = 'none';
+            
+            // Resetear estado de animación
+            isAnimated = false;
+            botonAnimacion.textContent = '▶️ Ver Animación';
         }
-        
-        // --- LÓGICA DEL BOTÓN ---
+
+        // Lógica del botón de animación
         botonAnimacion.addEventListener("click", () => {
+            if (!modeloEstaticoActual || !modeloAnimadoActual) {
+                console.warn("No hay modelo activo");
+                return;
+            }
+            
             if (isAnimated) {
                 // Cambiar a Estático
                 console.log("🔄 Cambiando a modelo Estático");
-                modeloAnimado.setAttribute("visible", "false");
+                modeloAnimadoActual.setAttribute('visible', 'false');
                 
-                const animComponent = modeloAnimado.components['custom-animation-mixer'];
+                const animComponent = modeloAnimadoActual.components['custom-animation-mixer'];
                 if (animComponent) {
                     animComponent.stopAnimation();
                 }
                 
-                modeloEstatico.setAttribute("visible", "true");
-                botonAnimacion.textContent = "▶️ Ver Animación";
+                modeloEstaticoActual.setAttribute('visible', 'true');
+                botonAnimacion.textContent = '▶️ Ver Animación';
                 isAnimated = false;
             } else {
                 // Cambiar a Animado
                 console.log("🔄 Cambiando a modelo Animado");
-                modeloEstatico.setAttribute("visible", "false");
-                modeloAnimado.setAttribute("visible", "true");
-                botonAnimacion.textContent = "⏹️ Ver Estático";
+                modeloEstaticoActual.setAttribute('visible', 'false');
+                modeloAnimadoActual.setAttribute('visible', 'true');
+                botonAnimacion.textContent = '⏹️ Ver Estático';
                 isAnimated = true;
                 
                 // Iniciar la animación
-                const animComponent = modeloAnimado.components['custom-animation-mixer'];
-                if (animComponent && animComponent.isPlaying === false) {
-                    animComponent.playAnimation();
+                const animComponent = modeloAnimadoActual.components['custom-animation-mixer'];
+                if (animComponent) {
+                    // Pequeño retraso para asegurar que el modelo está visible
+                    setTimeout(() => {
+                        if (animComponent.isPlaying === false) {
+                            animComponent.playAnimation();
+                        }
+                    }, 100);
                 }
             }
         });
 
-        console.log("México targetIndex:", document.getElementById("target-mexico")?.getAttribute("mindar-image-target"));
-        console.log("Argentina targetIndex:", document.getElementById("target-argentina")?.getAttribute("mindar-image-target"));
+        // ==============================================
+        // FUNCIONALIDAD DE ESCANEO QR
+        // ==============================================
+        
+        // Iniciar escáner QR
+        btnIniciarQR.addEventListener("click", async () => {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment" } 
+                });
+                qrVideo.srcObject = videoStream;
+                qrVideo.setAttribute("playsinline", true);
+                qrVideo.play();
+                
+                qrOverlay.style.display = "flex";
+                scanning = true;
+                
+                requestAnimationFrame(scanQR);
+            } catch (error) {
+                alert("Error al acceder a la cámara: " + error.message);
+            }
+        });
+
+        // Cerrar escáner QR
+        cerrarQR.addEventListener("click", () => {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            qrOverlay.style.display = "none";
+            scanning = false;
+        });
+
+        // Función para escanear QR continuamente
+        function scanQR() {
+            if (!scanning) return;
+            
+            if (qrVideo.readyState === qrVideo.HAVE_ENOUGH_DATA) {
+                const canvas = document.createElement("canvas");
+                canvas.width = qrVideo.videoWidth;
+                canvas.height = qrVideo.videoHeight;
+                const context = canvas.getContext("2d");
+                context.drawImage(qrVideo, 0, 0, canvas.width, canvas.height);
+                
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height, {
+                    inversionAttempts: "dontInvert",
+                });
+                
+                if (code) {
+                    const qrText = code.data;
+                    qrResult.textContent = `QR Detectado: ${qrText}`;
+                    
+                    // Buscar si el texto del QR coincide con algún país
+                    const paisEncontrado = paises.find(p => 
+                        p.qrText.toUpperCase() === qrText.toUpperCase().trim()
+                    );
+                    
+                    if (paisEncontrado) {
+                        qrResult.textContent = `✅ País detectado: ${paisEncontrado.nombre}`;
+                        
+                        // Cerrar escáner y mostrar modelo
+                        setTimeout(() => {
+                            cerrarQR.click();
+                            mostrarPais(paisEncontrado);
+                        }, 500);
+                    } else {
+                        qrResult.textContent = `❌ País no reconocido: ${qrText}`;
+                    }
+                } else {
+                    qrResult.textContent = "Esperando QR...";
+                }
+            }
+            
+            requestAnimationFrame(scanQR);
+        }
+
+        console.log("✅ Aplicación QR + AR inicializada con 12 países");
     </script>
 </body>
 </html>
