@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información de la Selección de Colombia de Fútbol</title>
+    <link rel="stylesheet" href="futbol.css">
+</head>
+<body>
+    <h1>Información de la Selección de Colombia</h1>
+    
+    <div class="botones">
+        <button id="btnEstadisticas">Estadísticas e Historia</button>
+        <button id="btnVideo">Ver Video</button>
+        <button id="btnTrivia">Jugar Trivia</button>
+    </div>
+    
+    <div class="contenido" id="contenido">
+        <!-- Aquí se mostrará el contenido según el botón seleccionado -->
+        <p>Selecciona una opción para ver información sobre la selección de Colombia de fútbol.</p>
+    </div>
+
+    <script>
+        // Datos de la selección de Colombia
+        const datosEquipo = {
+            nombre: "Colombia",
+            estadisticas: "La selección colombiana ha participado en 6 Copas del Mundo (1962, 1990, 1994, 1998, 2014, 2018). Su mejor participación fue en Brasil 2014, donde alcanzó los cuartos de final. Ha ganado una vez la Copa América (2001) y fue campeón de la Copa de Oro de la Concacaf en 2000.",
+            historia: "La selección de fútbol de Colombia, conocida como 'Los Cafeteros', es el equipo representativo del país. Su organización está a cargo de la Federación Colombiana de Fútbol (FCF), perteneciente a la CONMEBOL. La época dorada del fútbol colombiano se vivió en los años 90 con el 'combo' de jugadores como Valderrama, Asprilla, Rincón, entre otros, y se ha consolidado como una de las potencias sudamericanas en el siglo XXI.",
+            topJugadores: ["Carlos 'El Pibe' Valderrama", "Radamel Falcao García", "James Rodríguez", "René Higuita", "Faustino Asprilla"],
+            debut: 1938
+        };
+
+        // Elementos del DOM
+        const btnEstadisticas = document.getElementById('btnEstadisticas');
+        const btnVideo = document.getElementById('btnVideo');
+        const btnTrivia = document.getElementById('btnTrivia');
+        const btnModelo3D = document.getElementById('btnModelo3D');
+        const contenido = document.getElementById('contenido');
+
+        // Preguntas de trivia sobre la selección de Colombia
+        const preguntasTrivia = [
+            {
+                pregunta: "¿En qué año debutó oficialmente la selección colombiana?",
+                opciones: ["1938", "1930", "1946", "1954"],
+                respuestaCorrecta: 0
+            },
+            {
+                pregunta: "¿Quién es el máximo goleador histórico de la selección colombiana?",
+                opciones: ["James Rodríguez", "Radamel Falcao García", "Carlos Valderrama", "Faustino Asprilla"],
+                respuestaCorrecta: 1 // Falcao
+            },
+            {
+                pregunta: "¿En qué año Colombia ganó su única Copa América?",
+                opciones: ["1975", "2001", "1987", "2015"],
+                respuestaCorrecta: 1
+            },
+            {
+                pregunta: "¿Cómo se le conoce popularmente a la selección colombiana?",
+                opciones: ["La Verde", "Los Cafeteros", "La Tri", "Los Charrúas"],
+                respuestaCorrecta: 1
+            }
+        ];
+
+        // Función para mostrar estadísticas e historia
+        btnEstadisticas.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Estadísticas e Historia de ${datosEquipo.nombre}</h2>
+                <h3>Estadísticas:</h3>
+                <p>${datosEquipo.estadisticas}</p>
+                <h3>Historia:</h3>
+                <p>${datosEquipo.historia}</p>
+                <h3>Top 5 Mejores Jugadores:</h3>
+                <ol>
+                    ${datosEquipo.topJugadores.map(jugador => `<li>${jugador}</li>`).join('')}
+                </ol>
+                <p><strong>Año de debut:</strong> ${datosEquipo.debut}</p>
+            `;
+        });
+
+        // Función para mostrar el video
+        btnVideo.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Video de ${datosEquipo.nombre}</h2>
+                <div class="video-container">
+                    <video id="videoPlayer" controls>
+                        <source src="videos/${datosEquipo.nombre}.mp4" type="video/mp4">
+                        Tu navegador no soporta el elemento video.
+                    </video>
+                </div>
+                <div class="filtros-video">
+                    <button id="btnDesenfoque">Desenfoque</button>
+                    <button id="btnPixeleado">Low Quality</button>
+                    <button id="btnTermica">Termosaturado</button>
+                    <button id="btnNegativo">Negativo</button>
+                    <button id="btnLimpiar">Limpiar Filtro</button>
+                </div>
+            `;
+            
+            const videoPlayer = document.getElementById('videoPlayer');
+            const btnDesenfoque = document.getElementById('btnDesenfoque');
+            const btnPixeleado = document.getElementById('btnPixeleado');
+            const btnTermica = document.getElementById('btnTermica');
+            const btnNegativo = document.getElementById('btnNegativo');
+            const btnLimpiar = document.getElementById('btnLimpiar');
+            
+            btnDesenfoque.addEventListener('click', function() {
+                videoPlayer.style.filter = "blur(5px)";
+            });
+            
+            btnPixeleado.addEventListener('click', function() {
+                videoPlayer.style.filter = "blur(2px) contrast(150%) brightness(0.9)";
+                
+                videoPlayer.style.imageRendering = "pixelated";
+                
+                setTimeout(() => {
+                    videoPlayer.style.transform = "scale(0.5)";
+                    videoPlayer.style.transformOrigin = "center";
+                    videoPlayer.style.width = "100%";
+                    videoPlayer.style.height = "auto";
+                    
+                    setTimeout(() => {
+                        videoPlayer.style.transform = "scale(1)";
+                    }, 10);
+                }, 10);
+                
+                try {
+                    if (videoPlayer.readyState >= 2) {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const videoWidth = videoPlayer.videoWidth;
+                        const videoHeight = videoPlayer.videoHeight;
+                        
+                        if (videoWidth && videoHeight) {
+                            canvas.width = videoWidth;
+                            canvas.height = videoHeight;
+                            
+                            // Dibujar el video actual en el canvas
+                            ctx.drawImage(videoPlayer, 0, 0, videoWidth, videoHeight);
+                            
+                            // Redimensionar a baja resolución y luego ampliar
+                            const smallCanvas = document.createElement('canvas');
+                            smallCanvas.width = 80; // Resolución muy baja para pixelado grueso
+                            smallCanvas.height = 60;
+                            const smallCtx = smallCanvas.getContext('2d');
+                            smallCtx.drawImage(canvas, 0, 0, smallCanvas.width, smallCanvas.height);
+                            
+                            // Volver a dibujar en el canvas original ampliado
+                            ctx.imageSmoothingEnabled = false;
+                            ctx.drawImage(smallCanvas, 0, 0, canvas.width, canvas.height);
+                            
+                            // Convertir a dataURL y aplicar como poster para efecto persistente
+                            videoPlayer.poster = canvas.toDataURL();
+                        }
+                    }
+                } catch (e) {
+                    console.log("Pixelado por canvas no disponible, usando CSS", e);
+                }
+            });
+            
+            btnTermica.addEventListener('click', function() {
+                videoPlayer.style.filter = 
+                    "sepia(50%) " +
+                    "hue-rotate(320deg) " +  // Tonalidad púrpura/roja para simular calor
+                    "saturate(800%) " +       // Saturación intensa para los colores cálidos
+                    "brightness(1.2) " +      // Más brillo para simular incandescencia
+                    "contrast(150%) " +        // Alto contraste para resaltar diferencias térmicas
+                    "grayscale(20%)";          // Un poco de escala de grises para realismo
+            
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .video-container::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        pointer-events: none;
+                        background: linear-gradient(135deg, 
+                            rgba(0,0,255,0.2) 0%,    /* Azul (frío) */
+                            rgba(255,0,0,0.4) 50%,   /* Rojo (caliente) */
+                            rgba(255,255,255,0.3) 100%); /* Blanco (muy caliente) */
+                        mix-blend-mode: overlay;
+                        z-index: 1;
+                        border-radius: 10px;
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // También añadimos un efecto de brillo pulsante similar a cámaras térmicas reales
+                videoPlayer.style.animation = "thermalGlow 2s infinite alternate";
+                
+                if (!document.querySelector('#thermalKeyframes')) {
+                    const keyframes = document.createElement('style');
+                    keyframes.id = 'thermalKeyframes';
+                    keyframes.innerHTML = `
+                        @keyframes thermalGlow {
+                            0% { filter: sepia(50%) hue-rotate(320deg) saturate(800%) brightness(1.1) contrast(140%) grayscale(20%); }
+                            100% { filter: sepia(50%) hue-rotate(330deg) saturate(900%) brightness(1.3) contrast(160%) grayscale(10%); }
+                        }
+                    `;
+                    document.head.appendChild(keyframes);
+                }
+            });
+            
+            // Filtro negativo
+            btnNegativo.addEventListener('click', function() {
+                videoPlayer.style.filter = "invert(100%)";
+                videoPlayer.style.animation = "none";
+                
+                // Limpiar superposiciones térmicas
+                const overlays = document.querySelectorAll('style');
+                overlays.forEach(el => {
+                    if (el.innerHTML.includes('.video-container::after')) {
+                        el.remove();
+                    }
+                });
+            });
+            
+            // Limpiar filtros
+            btnLimpiar.addEventListener('click', function() {
+                videoPlayer.style.filter = "none";
+                videoPlayer.style.animation = "none";
+                videoPlayer.style.imageRendering = "auto";
+                videoPlayer.style.transform = "none";
+                
+                // Limpiar superposiciones térmicas
+                const overlays = document.querySelectorAll('style');
+                overlays.forEach(el => {
+                    if (el.innerHTML.includes('.video-container::after')) {
+                        el.remove();
+                    }
+                });
+            });
+        });
+
+        // Función para mostrar la trivia
+        btnTrivia.addEventListener('click', function() {
+            let triviaHTML = `
+                <h2>Trivia de ${datosEquipo.nombre}</h2>
+                <form id="formTrivia">
+            `;
+            
+            preguntasTrivia.forEach((pregunta, index) => {
+                triviaHTML += `
+                    <div class="pregunta">
+                        <p><strong>${index + 1}. ${pregunta.pregunta}</strong></p>
+                        ${pregunta.opciones.map((opcion, i) => `
+                            <div>
+                                <input type="radio" id="p${index}o${i}" name="p${index}" value="${i}">
+                                <label for="p${index}o${i}">${opcion}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            });
+            
+            triviaHTML += `
+                    <button type="button" id="btnCalcular">Calcular Resultado</button>
+                </form>
+                <div id="resultadoTrivia" class="resultado"></div>
+            `;
+            
+            contenido.innerHTML = triviaHTML;
+            
+            // Añadir funcionalidad al botón de calcular resultado
+            document.getElementById('btnCalcular').addEventListener('click', function() {
+                let respuestasCorrectas = 0;
+                
+                preguntasTrivia.forEach((pregunta, index) => {
+                    const opciones = document.getElementsByName(`p${index}`);
+                    let seleccionada = -1;
+                    
+                    for (let i = 0; i < opciones.length; i++) {
+                        if (opciones[i].checked) {
+                            seleccionada = parseInt(opciones[i].value);
+                            break;
+                        }
+                    }
+                    
+                    if (seleccionada === pregunta.respuestaCorrecta) {
+                        respuestasCorrectas++;
+                    }
+                });
+                
+                const porcentaje = (respuestasCorrectas / preguntasTrivia.length) * 100;
+                document.getElementById('resultadoTrivia').innerHTML = `
+                    <p>Has acertado ${respuestasCorrectas} de ${preguntasTrivia.length} preguntas.</p>
+                    <p>Tu puntuación: ${porcentaje.toFixed(1)}%</p>
+                `;
+            });
+        });
+
+        // Función para el modelo 3D (por implementar)
+        btnModelo3D.addEventListener('click', function() {
+            contenido.innerHTML = `
+                <h2>Modelo 3D</h2>
+                <p>Esta funcionalidad está en desarrollo.</p>
+            `;
+        });
+    </script>
+</body>
+</html>

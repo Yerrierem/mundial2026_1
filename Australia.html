@@ -13,7 +13,6 @@
         <button id="btnEstadisticas">Estadísticas e Historia</button>
         <button id="btnVideo">Ver Video</button>
         <button id="btnTrivia">Jugar Trivia</button>
-        <button id="btnModelo3D">Modelo 3D</button>
     </div>
     
     <div class="contenido" id="contenido">
@@ -89,37 +88,152 @@
                     </video>
                 </div>
                 <div class="filtros-video">
-                    <button id="btnBN">Blanco y Negro</button>
-                    <button id="btnSaturado">Sobresaturado</button>
+                    <button id="btnDesenfoque">Desenfoque</button>
+                    <button id="btnPixeleado">Low Quality</button>
+                    <button id="btnTermica">Termosaturado</button>
                     <button id="btnNegativo">Negativo</button>
                     <button id="btnLimpiar">Limpiar Filtro</button>
                 </div>
             `;
             
-            // Añadir funcionalidad a los botones de filtro
             const videoPlayer = document.getElementById('videoPlayer');
-            const btnBN = document.getElementById('btnBN');
-            const btnSaturado = document.getElementById('btnSaturado');
+            const btnDesenfoque = document.getElementById('btnDesenfoque');
+            const btnPixeleado = document.getElementById('btnPixeleado');
+            const btnTermica = document.getElementById('btnTermica');
             const btnNegativo = document.getElementById('btnNegativo');
             const btnLimpiar = document.getElementById('btnLimpiar');
             
-            btnBN.addEventListener('click', function() {
-                videoPlayer.style.filter = "grayscale(100%)";
+            btnDesenfoque.addEventListener('click', function() {
+                videoPlayer.style.filter = "blur(5px)";
             });
             
-            btnSaturado.addEventListener('click', function() {
-                videoPlayer.style.filter = "saturate(300%)";
+            btnPixeleado.addEventListener('click', function() {
+                videoPlayer.style.filter = "blur(2px) contrast(150%) brightness(0.9)";
+                
+                videoPlayer.style.imageRendering = "pixelated";
+                
+                setTimeout(() => {
+                    videoPlayer.style.transform = "scale(0.5)";
+                    videoPlayer.style.transformOrigin = "center";
+                    videoPlayer.style.width = "100%";
+                    videoPlayer.style.height = "auto";
+                    
+                    setTimeout(() => {
+                        videoPlayer.style.transform = "scale(1)";
+                    }, 10);
+                }, 10);
+                
+                try {
+                    if (videoPlayer.readyState >= 2) {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const videoWidth = videoPlayer.videoWidth;
+                        const videoHeight = videoPlayer.videoHeight;
+                        
+                        if (videoWidth && videoHeight) {
+                            canvas.width = videoWidth;
+                            canvas.height = videoHeight;
+                            
+                            // Dibujar el video actual en el canvas
+                            ctx.drawImage(videoPlayer, 0, 0, videoWidth, videoHeight);
+                            
+                            // Redimensionar a baja resolución y luego ampliar
+                            const smallCanvas = document.createElement('canvas');
+                            smallCanvas.width = 80; // Resolución muy baja para pixelado grueso
+                            smallCanvas.height = 60;
+                            const smallCtx = smallCanvas.getContext('2d');
+                            smallCtx.drawImage(canvas, 0, 0, smallCanvas.width, smallCanvas.height);
+                            
+                            // Volver a dibujar en el canvas original ampliado
+                            ctx.imageSmoothingEnabled = false;
+                            ctx.drawImage(smallCanvas, 0, 0, canvas.width, canvas.height);
+                            
+                            // Convertir a dataURL y aplicar como poster para efecto persistente
+                            videoPlayer.poster = canvas.toDataURL();
+                        }
+                    }
+                } catch (e) {
+                    console.log("Pixelado por canvas no disponible, usando CSS", e);
+                }
             });
             
+            btnTermica.addEventListener('click', function() {
+                videoPlayer.style.filter = 
+                    "sepia(50%) " +
+                    "hue-rotate(320deg) " +  // Tonalidad púrpura/roja para simular calor
+                    "saturate(800%) " +       // Saturación intensa para los colores cálidos
+                    "brightness(1.2) " +      // Más brillo para simular incandescencia
+                    "contrast(150%) " +        // Alto contraste para resaltar diferencias térmicas
+                    "grayscale(20%)";          // Un poco de escala de grises para realismo
+            
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .video-container::after {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        pointer-events: none;
+                        background: linear-gradient(135deg, 
+                            rgba(0,0,255,0.2) 0%,    /* Azul (frío) */
+                            rgba(255,0,0,0.4) 50%,   /* Rojo (caliente) */
+                            rgba(255,255,255,0.3) 100%); /* Blanco (muy caliente) */
+                        mix-blend-mode: overlay;
+                        z-index: 1;
+                        border-radius: 10px;
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // También añadimos un efecto de brillo pulsante similar a cámaras térmicas reales
+                videoPlayer.style.animation = "thermalGlow 2s infinite alternate";
+                
+                if (!document.querySelector('#thermalKeyframes')) {
+                    const keyframes = document.createElement('style');
+                    keyframes.id = 'thermalKeyframes';
+                    keyframes.innerHTML = `
+                        @keyframes thermalGlow {
+                            0% { filter: sepia(50%) hue-rotate(320deg) saturate(800%) brightness(1.1) contrast(140%) grayscale(20%); }
+                            100% { filter: sepia(50%) hue-rotate(330deg) saturate(900%) brightness(1.3) contrast(160%) grayscale(10%); }
+                        }
+                    `;
+                    document.head.appendChild(keyframes);
+                }
+            });
+            
+            // Filtro negativo
             btnNegativo.addEventListener('click', function() {
                 videoPlayer.style.filter = "invert(100%)";
+                videoPlayer.style.animation = "none";
+                
+                // Limpiar superposiciones térmicas
+                const overlays = document.querySelectorAll('style');
+                overlays.forEach(el => {
+                    if (el.innerHTML.includes('.video-container::after')) {
+                        el.remove();
+                    }
+                });
             });
             
+            // Limpiar filtros
             btnLimpiar.addEventListener('click', function() {
                 videoPlayer.style.filter = "none";
+                videoPlayer.style.animation = "none";
+                videoPlayer.style.imageRendering = "auto";
+                videoPlayer.style.transform = "none";
+                
+                // Limpiar superposiciones térmicas
+                const overlays = document.querySelectorAll('style');
+                overlays.forEach(el => {
+                    if (el.innerHTML.includes('.video-container::after')) {
+                        el.remove();
+                    }
+                });
             });
         });
-
+        
         // Función para mostrar la trivia
         btnTrivia.addEventListener('click', function() {
             let triviaHTML = `
