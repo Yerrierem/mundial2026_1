@@ -70,6 +70,52 @@
             padding: 2rem;
         }
         
+        /* Botón Manual (arriba del todo) */
+        .manual-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1rem;
+        }
+        
+        .boton-manual {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(to right, #FF8C00, #FFA500);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 0 #cc7000;
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 2px solid #0a3d0a;
+        }
+        
+        .boton-manual:hover {
+            background: linear-gradient(to right, #FFA500, #FF8C00);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 0 #cc7000;
+        }
+        
+        .boton-manual:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #cc7000;
+        }
+        
+        .icono-manual {
+            font-size: 1.3rem;
+        }
+        
         /* Botones superiores */
         .botones-superiores {
             display: flex;
@@ -347,6 +393,10 @@
                 padding: 1rem;
             }
             
+            .manual-container {
+                justify-content: center;
+            }
+            
             .botones-superiores {
                 flex-direction: column;
                 align-items: center;
@@ -358,6 +408,11 @@
                 max-width: 300px;
                 padding: 1rem 1.5rem;
                 font-size: 1.1rem;
+            }
+            
+            .boton-manual {
+                padding: 0.6rem 1.5rem;
+                font-size: 1rem;
             }
             
             .countries-grid {
@@ -408,13 +463,21 @@
     </header>
     
     <div class="container">
+        <!-- Botón Manual (hasta mero arriba) -->
+        <div class="manual-container">
+            <a href="Manual.html" class="boton-manual">
+                <span class="icono-manual">📖</span>
+                Manual de Usuario
+            </a>
+        </div>
+        
         <div class="botones-superiores">
             <a href="trivia.html" class="boton-superior trivia">
                 <span class="icono-boton">🎮</span>
                 Jugar Trivia de Fútbol
             </a>
             <a href="ar.html" class="boton-superior realidad">
-                <span class="icono-boton"></span>
+                <span class="icono-boton">📱</span>
                 Escáner de Realidad Aumentada
             </a>
         </div>

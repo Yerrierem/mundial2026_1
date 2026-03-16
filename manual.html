@@ -3,275 +3,612 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manual de Escaneo AR - Mundial 2026</title>
+    <title>Manual de Usuario - Mundial de Fútbol</title>
     <style>
-        :root {
-            --primary: #128bee;
-            --secondary: #0b37b0;
-            --accent: #0039FF;
-            --dark: #0096db;
-            --light: #f5f7ff;
-            --text: #333;
-            --card-bg: #e0e6ff;
-            --body-bg: #051467;
-        }
-        
+        /* Estilos generales */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
         }
         
         body {
-            background-color: var(--body-bg);
-            color: rgb(10, 2, 39);
-            line-height: 1.6;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
+            background-color: #0a3d0a;
+            background-image: 
+                linear-gradient(rgba(255, 140, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 140, 0, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: #333;
+            min-height: 100vh;
         }
         
         header {
+            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
+            color: white;
+            padding: 2.5rem;
             text-align: center;
-            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-bottom: 5px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255, 140, 0, 0.2) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(255, 140, 0, 0.2) 2px, transparent 2px);
+            background-size: 60px 60px;
+            pointer-events: none;
         }
         
         h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            color: #FF8C00;
+        }
+        
+        header p {
+            font-size: 1.3rem;
+            margin-top: 0.5rem;
             color: white;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
         
-        .subtitle {
-            color: var(--light);
-            font-size: 1.2em;
-            opacity: 0.9;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
         }
         
-        .section {
-            background: var(--card-bg);
-            margin: 25px 0;
-            padding: 25px;
-            border-radius: 10px;
-            border-left: 5px solid var(--primary);
-        }
-        
-        h2 {
-            color: var(--secondary);
-            margin-bottom: 15px;
+        /* Botón de volver */
+        .volver-container {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            justify-content: flex-start;
+            margin-bottom: 2rem;
         }
         
-        h2 .emoji {
-            font-size: 1.3em;
-        }
-        
-        .step {
-            background: white;
-            margin: 15px 0;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .step-number {
-            background: var(--primary);
+        .boton-volver {
+            padding: 0.8rem 2rem;
+            background: linear-gradient(to right, #FF8C00, #FFA500);
             color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 0 #cc7000;
+            position: relative;
+            overflow: hidden;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-right: 10px;
-            font-weight: bold;
+            gap: 8px;
+            border: 2px solid #0a3d0a;
         }
         
-        .screenshot {
-            width: 100%;
-            max-width: 300px;
-            border: 3px solid var(--primary);
-            border-radius: 10px;
-            margin: 15px 0;
-            display: block;
+        .boton-volver:hover {
+            background: linear-gradient(to right, #FFA500, #FF8C00);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 0 #cc7000;
         }
         
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
+        .boton-volver:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #cc7000;
         }
         
-        .feature-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
+        .icono-volver {
+            font-size: 1.3rem;
+        }
+        
+        /* Título de la sección */
+        .section-title {
             text-align: center;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-        
-        .feature-icon {
-            font-size: 2.5em;
-            margin-bottom: 15px;
-        }
-        
-        .feature-title {
-            color: var(--secondary);
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .btn-back {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            display: block;
-            margin: 30px auto;
-            text-decoration: none;
+            margin: 2rem 0;
+            padding: 1rem;
+            background-color: rgba(10, 61, 10, 0.8);
+            border-radius: 10px;
+            border: 3px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-title h2 {
+            font-size: 2.2rem;
+            color: #FF8C00;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 140, 0, 0.2) 30px, transparent 30px),
+                radial-gradient(circle at 80% 50%, rgba(255, 140, 0, 0.2) 30px, transparent 30px);
+            pointer-events: none;
+        }
+        
+        /* Tarjetas de explicación */
+        .manual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .manual-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 3px solid #0a3d0a;
+            border-top: 8px solid #FF8C00;
+            position: relative;
+            padding: 1.5rem;
+        }
+        
+        .manual-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: repeating-linear-gradient(
+                90deg,
+                #0a3d0a,
+                #0a3d0a 10px,
+                #FF8C00 10px,
+                #FF8C00 20px
+            );
+        }
+        
+        .manual-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .manual-icono {
+            font-size: 3rem;
             text-align: center;
-            width: 200px;
+            margin-bottom: 1rem;
         }
         
-        .btn-back:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        .manual-card h3 {
+            color: #0a3d0a;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            border-bottom: 2px dashed #FF8C00;
+            padding-bottom: 0.5rem;
         }
         
-        .warning {
-            background: #fff3cd;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #ffc107;
-            margin: 15px 0;
+        .manual-card p {
+            color: #333;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 1rem;
         }
         
+        .manual-card ul {
+            font-family: Arial, sans-serif;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .manual-card li {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .manual-card strong {
+            color: #FF8C00;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(to right, #FF8C00, #FFA500);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 0 #cc7000;
+        }
+        
+        /* Sección de pasos */
+        .steps-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 3px solid #0a3d0a;
+            border-left: 8px solid #FF8C00;
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .step-number {
+            background: linear-gradient(to right, #FF8C00, #FFA500);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 0 #cc7000;
+            flex-shrink: 0;
+        }
+        
+        .step-text {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .step-text strong {
+            color: #0a3d0a;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+        }
+        
+        /* Nota adicional */
+        .note {
+            background: linear-gradient(135deg, #fff3e0, #fff);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 2px solid #FF8C00;
+            text-align: center;
+        }
+        
+        .note p {
+            font-family: Arial, sans-serif;
+            font-size: 1.1rem;
+            color: #0a3d0a;
+        }
+        
+        footer {
+            background-color: #0a3d0a;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-top: 5px solid #FF8C00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                #FF8C00 10px,
+                #FF8C00 20px
+            );
+        }
+        
+        footer p {
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Animaciones */
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .manual-card {
+            animation: cardAppear 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .manual-card:nth-child(1) { animation-delay: 0.1s; }
+        .manual-card:nth-child(2) { animation-delay: 0.2s; }
+        .manual-card:nth-child(3) { animation-delay: 0.3s; }
+        .manual-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* Responsive */
         @media (max-width: 768px) {
             .container {
-                padding: 15px;
+                padding: 1rem;
             }
             
             h1 {
-                font-size: 2em;
+                font-size: 2.2rem;
             }
             
-            .feature-grid {
-                grid-template-columns: 1fr;
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .manual-card h3 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.4rem;
+            }
+            
+            .step-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Manual de Usuario</h1>
+        <p>Aprende a utilizar todas las funciones de la aplicación</p>
+    </header>
+    
     <div class="container">
-        <header>
-            <h1>Manual de Escaneo de Realidad Aumentada</h1>
-            <p class="subtitle">Resuelve tus dudas aquí mismo.</p>
-        </header>
-
-        <div class="section">
-            <h2>¿Qué puedes hacer?</h2>
-            <p>En esta página web puedes escanear las distintas banderas de los equipos para llevarte increibles sorpresas, como:</p>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-title">Estadísticas en tiempo real</div>
-                    <p>Datos actualizados de cada equipo participante. ¡Puedes ver sus goles, sus victorias, sus participantes, sus partidos jugados y más!</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-title">Videos con filtros</div>
-                    <p>Podrás ver los videos más representativos de cada uno de los equipos, pudiendo interactuar con estos y colocarles fabulosos filtros.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-title">Trivia interactiva</div>
-                    <p>Responde preguntas sobre los equipos, los datos de tus preguntas se guardarán y quién tenga la mayor cantidad de puntos se llevará una gran sorpresa.</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-title">Modelos 3D animados</div>
-                    <p>Cada que escanees una bandera, su principal atractivo será un modelo en 3D representativo el cuál esconde una animación especial la cuál podrás activar.</p>
-                </div>
-            </div>
+        <!-- Botón para volver a la página principal -->
+        <div class="volver-container">
+            <a href="index.html" class="boton-volver">
+                <span class="icono-volver">⬅️</span>
+                Volver al Inicio
+            </a>
         </div>
-
-        <div class="section">
-            <h2>Requisitos previos</h2>
-            
-            <div class="warning">
-                <strong>Importante:</strong> Ambos dispositivos deben estar en la misma red WiFi
-            </div>
-            
-            <div class="step">
-                <p><span class="step-number">1</span> <strong>Computadora con XAMPP encendido</strong></p>
-                <p>Asegúrate que Apache esté funcionando en tu computadora.</p>
-            </div>
-            
-            <div class="step">
-                <p><span class="step-number">2</span> <strong>Sistemas Operativos</strong></p>
-                <p>Usa Chrome para Android. Usa Safari para iOS.</p>
-            </div>
-            
-            <div class="step">
-                <p><span class="step-number">3</span> <strong>Conexión WiFi</strong></p>
-                <p>Ambos dispositivos conectados a la misma red</p>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2><span class="emoji">🚀</span> Paso a paso para escanear</h2>
-            
-            <div class="step">
-                <p><span class="step-number">1</span> <strong>Encuentra la dirección IP</strong></p>
-                <p>En tu computadora, ejecuta <code>ipconfig</code> y busca la dirección IPv4</p>
-                <p><strong>IP de la computadora actual:</strong> 192.168.100.6</p>
-            </div>
-            
-            <div class="step">
-                <p><span class="step-number">2</span> <strong>Abre en tu celular</strong></p>
-                <p>En el navegador de tu celular, escribe:</p>
-                <p style="background: #eee; padding: 10px; border-radius: 5px; font-family: monospace;">
-                    http://192.168.100.6/mundial2026/ar.html
-                </p>
-            </div>
-            
-            <div class="step">
-                <p><span class="step-number">3</span> <strong>Permite el acceso a la cámara</strong></p>
-                <p>Cuando el navegador te lo pida, permite el acceso a la cámara</p>
-                <p><em>Toca "Permitir" cuando aparezca el mensaje</em></p>
-            </div>
-            
-            <div class="step">
-                <p><span class="step-number">4</span> <strong>Enfoca las banderas</strong></p>
-                <p>Con tu celular, enfoca cualquiera de las banderas que ves en la pantalla de tu computadora</p>
-                <p><em>Mantén estable el celular para mejor detección</em></p>
-            </div>
-            
-            <div class="step">
-                <p><span class="step-number">5</span> <strong>¡Disfruta la experiencia AR!</strong></p>
-                <p>Verás aparecer el modelo 3D y los botones de interacción</p>
-            </div>
-        </div>
-
         
-        <a href="PaginaPrincipal.html" class="btn-back">Volver al Inicio</a>
+        <div class="section-title">
+            <h2>Funciones Principales</h2>
+        </div>
+        
+        <!-- Grid de funciones principales -->
+        <div class="manual-grid">
+            <!-- Tarjeta 1: Página principal y tarjetas de países -->
+            <div class="manual-card">
+                <div class="manual-icono">🏠</div>
+                <h3>Página Principal</h3>
+                <p>Al ingresar a la aplicación, encontrarás una cuadrícula con <strong>tarjetas de países</strong> participantes en el Mundial 2026. Cada tarjeta incluye:</p>
+                <ul>
+                    <li>Bandera del país</li>
+                    <li>Nombre del equipo</li>
+                    <li>🔍 Botón "Ver detalles del equipo"</li>
+                </ul>
+                <p>Al hacer clic en cualquier tarjeta, serás redirigido a la página específica de ese país.</p>
+                <div class="badge">12 países disponibles</div>
+            </div>
+            
+            <!-- Tarjeta 2: Página de país (estadísticas, videos, filtros) -->
+            <div class="manual-card">
+                <div class="manual-icono">📊</div>
+                <h3>Página de País</h3>
+                <p>En la página de cada país encontrarás:</p>
+                <ul>
+                    <li><strong>Estadísticas del equipo:</strong> Historia, mejor participación, jugadores destacados.</li>
+                    <li><strong>Video destacado:</strong> Un video con momentos importantes del equipo.</li>
+                    <li><strong>4 filtros diferentes:</strong> Puedes cambiar entre filtros para ver el video con diferentes efectos visuales:
+                        <ul>
+                            <li>Normal</li>
+                            <li>Blanco y negro</li>
+                            <li>Sepia</li>
+                            <li>Alto contraste</li>
+                        </ul>
+                    </li>
+                    <li><strong>Trivia específica:</strong> Un juego de preguntas y respuestas sobre ese equipo en particular.</li>
+                </ul>
+            </div>
+            
+            <!-- Tarjeta 3: Trivia General -->
+            <div class="manual-card">
+                <div class="manual-icono">🎮</div>
+                <h3>Trivia General</h3>
+                <p>Desde la página principal, encontrarás el botón <strong>"Jugar Trivia de Fútbol"</strong> que te llevará a un juego de preguntas generales sobre el mundial.</p>
+                <p><strong>Características:</strong></p>
+                <ul>
+                    <li>Las preguntas rotan aleatoriamente</li>
+                    <li>Cada vez que juegues, tendrás una trivia diferente</li>
+                    <li>Preguntas sobre historia, jugadores, estadísticas y datos curiosos</li>
+                    <li>Sistema de puntuación para medir tu conocimiento</li>
+                </ul>
+                <p class="badge">¡Nuevas preguntas cada vez!</p>
+            </div>
+            
+            <!-- Tarjeta 4: Realidad Aumentada -->
+            <div class="manual-card">
+                <div class="manual-icono">📱</div>
+                <h3>Realidad Aumentada</h3>
+                <p>La función más innovadora: el <strong>Escáner de Realidad Aumentada</strong>. Desde la página principal, haz clic en el botón correspondiente para abrir la cámara.</p>
+                <p><strong>¿Cómo funciona?</strong></p>
+                <ul>
+                    <li>Enfoca un <strong>código QR específico de un país</strong></li>
+                    <li>Aparecerá un <strong>modelo 3D</strong> del equipo en tu entorno real</li>
+                    <li>Toca el botón <strong>"Ver Animación"</strong> para hacer que el modelo reproduzca una animación especial</li>
+                    <li>Vuelve a tocar el botón para volver al modelo estático</li>
+                    <li>El nombre del país escaneado se muestra en pantalla</li>
+                </ul>
+                <p class="badge">Requiere permisos de cámara</p>
+            </div>
+        </div>
+        
+        <!-- Sección de pasos detallados -->
+        <div class="section-title">
+            <h2>Guía de Uso Paso a Paso</h2>
+        </div>
+        
+        <div class="steps-container">
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-text">
+                    <strong>Explora los países:</strong> En la página principal, navega por las tarjetas de los 12 países participantes. Cada tarjeta tiene el nombre y la bandera del equipo.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-text">
+                    <strong>Selecciona un país:</strong> Haz clic en "Ver detalles del equipo" en cualquier tarjeta para acceder a la página específica de ese país.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-text">
+                    <strong>Explora el contenido del país:</strong> En la página del país, podrás ver las estadísticas del equipo, el video destacado y podrás cambiar entre los 4 filtros disponibles haciendo clic en los botones correspondientes.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-text">
+                    <strong>Juega la trivia del equipo:</strong> En la página del país, busca el botón para jugar la trivia específica de ese equipo. Pon a prueba tus conocimientos sobre su historia y jugadores.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">5</div>
+                <div class="step-text">
+                    <strong>Vuelve a la página principal:</strong> Desde cualquier página de país, puedes regresar al inicio para explorar otros equipos o acceder a las funciones generales.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">6</div>
+                <div class="step-text">
+                    <strong>Juega la trivia general:</strong> En la página principal, haz clic en "Jugar Trivia de Fútbol" para acceder a un juego de preguntas generales. Las preguntas cambian cada vez para que siempre sea un desafío nuevo.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">7</div>
+                <div class="step-text">
+                    <strong>Usa la Realidad Aumentada:</strong> En la página principal, haz clic en "Escáner de Realidad Aumentada". Acepta los permisos de cámara cuando el navegador lo solicite.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">8</div>
+                <div class="step-text">
+                    <strong>Escanea un QR:</strong> Enfoca la cámara hacia un código QR específico de un país (MEXICO, ARGENTINA, BRASIL, etc.). Automáticamente reconocerá el código y mostrará el modelo 3D correspondiente.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">9</div>
+                <div class="step-text">
+                    <strong>Interactúa con el modelo 3D:</strong> Una vez escaneado el QR, verás el modelo del equipo en tu entorno. Toca el botón "Ver Animación" para reproducir una animación especial del modelo. Puedes alternar entre estático y animado cuantas veces quieras.
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">10</div>
+                <div class="step-text">
+                    <strong>Escanea otros países:</strong> Puedes escanear diferentes códigos QR para ver los modelos 3D de todos los equipos disponibles. Cada país tiene su propio modelo estático y animado.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nota adicional sobre los códigos QR -->
+        <div class="note">
+            <p> <strong>Nota importante:</strong> Los códigos QR deben contener el nombre del país en mayúsculas (ej: MEXICO, ARGENTINA, BRASIL, etc.) para que el escáner los reconozca correctamente. Cada país tiene su propio código QR específico.</p>
+        </div>
+        
+        <!-- Lista de países disponibles -->
+        <div class="section-title">
+            <h2>Países Disponibles</h2>
+        </div>
+        
+        <div class="manual-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Argentina</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Australia</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Brasil</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Canadá</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Corea del Sur</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Uruguay</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Estados Unidos</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Francia</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Japón</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Colombia</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">México</h3>
+            </div>
+            <div class="manual-card" style="padding: 1rem; text-align: center;">
+                <h3 style="font-size: 1.3rem;">Inglaterra</h3>
+            </div>
+        </div>
     </div>
+    
+    <footer>
+        <p>&copy; 2023 Mundial de Fútbol - Todos los derechos reservados</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Versión 1.0 - Manual de Usuario</p>
+    </footer>
 </body>
 </html>

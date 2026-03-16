@@ -13,7 +13,15 @@
         /* Forzar que nada tenga fondo sólido */
         html, body {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background-color: transparent !important;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: #0a3d0a !important;
+            background-image: 
+                linear-gradient(rgba(255, 140, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 140, 0, 0.1) 1px, transparent 1px) !important;
+            background-size: 40px 40px !important;
         }
 
         /* Interfaz de usuario (Capa superior) */
@@ -21,51 +29,173 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 10;
-            pointer-events: none; /* Permite que AR.js detecte gestos si fuera necesario */
+            pointer-events: none;
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
         }
 
         .instrucciones, .qr-mensaje {
             pointer-events: none;
             color: white;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 15px;
+            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
+            padding: 15px 25px;
             margin-top: 20px;
-            border-radius: 30px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
             text-align: center;
             max-width: 280px;
+            border: 3px solid #FF8C00;
+            box-shadow: 0 6px 0 #063106;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instrucciones::before, .qr-mensaje::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
+            transition: left 0.7s;
+            pointer-events: none;
+        }
+
+        .instrucciones:hover::before, .qr-mensaje:hover::before {
+            left: 100%;
         }
 
         #pais-activo {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(to right, #FF8C00, #FFA500);
             color: white;
-            padding: 12px 25px;
+            padding: 12px 30px;
             border-radius: 50px;
             font-weight: bold;
             margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 0 #cc7000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid #0a3d0a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #pais-activo::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.7s;
+        }
+
+        #pais-activo:hover::before {
+            left: 100%;
         }
 
         #boton-animacion {
-            pointer-events: auto; /* IMPORTANTE: Para que se pueda tocar */
+            pointer-events: auto;
             position: absolute;
             bottom: 50px;
             padding: 16px 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(to right, #0a3d0a, #1e6b1e);
             color: white;
             border: none;
             border-radius: 50px;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 0 #063106;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #FF8C00;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #boton-animacion::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
+            transition: left 0.7s;
+        }
+
+        #boton-animacion:hover {
+            background: linear-gradient(to right, #1e6b1e, #0a3d0a);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 9px 0 #063106;
+        }
+
+        #boton-animacion:hover::before {
+            left: 100%;
+        }
+
+        #boton-animacion:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #063106;
         }
 
         /* Video de escaneo (invisible) */
         #qr-video { display: none; }
+
+        /* Animaciones */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .qr-mensaje {
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        /* Decoración adicional para la UI */
+        .ui-container::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: repeating-linear-gradient(
+                90deg,
+                #0a3d0a,
+                #0a3d0a 20px,
+                #FF8C00 20px,
+                #FF8C00 40px
+            );
+            z-index: 11;
+            pointer-events: none;
+        }
+
+        .ui-container::after {
+            content: "";
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: repeating-linear-gradient(
+                90deg,
+                #FF8C00,
+                #FF8C00 20px,
+                #0a3d0a 20px,
+                #0a3d0a 40px
+            );
+            z-index: 11;
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -89,9 +219,30 @@
         <a-assets>
             <a-asset-item id="modeloMexicoEstatico" src="./assets/Mexico.glb"></a-asset-item>
             <a-asset-item id="modeloEstadosUnidosEstatico" src="./assets/EstadosUnidos.glb"></a-asset-item>
+            <a-asset-item id="modeloCanadaEstatico" src="./assets/Canada.glb"></a-asset-item>
+            <a-asset-item id="modeloBrasilEstatico" src="./assets/Brasil.glb"></a-asset-item>
+            <a-asset-item id="modeloUruguayEstatico" src="./assets/Uruguay.glb"></a-asset-item>
+            <a-asset-item id="modeloColombiaEstatico" src="./assets/Colombia.glb"></a-asset-item>
+            <a-asset-item id="modeloFranciaEstatico" src="./assets/Francia.glb"></a-asset-item>
+            <a-asset-item id="modeloInglaterraEstatico" src="./assets/Inglaterra.glb"></a-asset-item>
+            <a-asset-item id="modeloCoreaSurEstatico" src="./assets/CoreaSur.glb"></a-asset-item>
+            <a-asset-item id="modeloJaponEstatico" src="./assets/Japon.glb"></a-asset-item>
+            <a-asset-item id="modeloAustraliaEstatico" src="./assets/Australia.glb"></a-asset-item>
+            <a-asset-item id="modeloArgentinaEstatico" src="./assets/Argentina.glb"></a-asset-item>
+
             <a-asset-item id="modeloMexicoAnimado" src="./assets/MexicoA.glb"></a-asset-item>
             <a-asset-item id="modeloEstadosUnidosAnimado" src="./assets/EstadosUnidosA.glb"></a-asset-item>
-            </a-assets>
+            <a-asset-item id="modeloCanadaAnimado" src="./assets/CanadaA.glb"></a-asset-item>
+            <a-asset-item id="modeloBrasilAnimado" src="./assets/BrasilA.glb"></a-asset-item>
+            <a-asset-item id="modeloUruguayAnimado" src="./assets/UruguayA.glb"></a-asset-item>
+            <a-asset-item id="modeloColombiaAnimado" src="./assets/ColombiaA.glb"></a-asset-item>
+            <a-asset-item id="modeloFranciaAnimado" src="./assets/FranciaA.glb"></a-asset-item>
+            <a-asset-item id="modeloInglaterraAnimado" src="./assets/InglaterraA.glb"></a-asset-item>
+            <a-asset-item id="modeloCoreaSurAnimado" src="./assets/CoreaSurA.glb"></a-asset-item>
+            <a-asset-item id="modeloJaponAnimado" src="./assets/JaponA.glb"></a-asset-item>
+            <a-asset-item id="modeloAustraliaAnimado" src="./assets/AustraliaA.glb"></a-asset-item>
+            <a-asset-item id="modeloArgentinaAnimado" src="./assets/ArgentinaA.glb"></a-asset-item>
+        </a-assets>
 
         <a-entity camera></a-entity>
 
@@ -102,7 +253,7 @@
     </a-scene>
 
     <script>
-        // --- 1. TU COMPONENTE DE ANIMACIÓN (Original) ---
+        // --- COMPONENTE DE ANIMACIÓN---
         AFRAME.registerComponent('custom-animation-mixer', {
             schema: {
                 clipIndex: { type: 'int', default: 0 },
@@ -142,11 +293,20 @@
             }
         });
 
-        // --- 2. TU LÓGICA DE DATOS (Original) ---
+        // --- LÓGICA DE DATOS ---
         const paises = [
-            { id: 'mexico', nombre: 'MÉXICO', qrText: 'MEXICO', modeloEstatico: '#modeloMexicoEstatico', modeloAnimado: '#modeloMexicoAnimado', color: '#CE1126' },
-            { id: 'estadosunidos', nombre: 'ESTADOS UNIDOS', qrText: 'ARGENTINA', modeloEstatico: '#modeloEstadosUnidosEstatico', modeloAnimado: '#modeloEstadosUnidosAnimado', color: '#B22234' },
-            // ... (Copia aquí el resto de tus países)
+            { id: 'mexico', nombre: '', qrText: 'MEXICO', modeloEstatico: '#modeloMexicoEstatico', modeloAnimado: '#modeloMexicoAnimado', color: '#CE1126' },
+            { id: 'estadosunidos', nombre: '', qrText: 'ESTADOSUNIDOS', modeloEstatico: '#modeloEstadosUnidosEstatico', modeloAnimado: '#modeloEstadosUnidosAnimado', color: '#B22234' },
+            { id: 'canada', nombre: '', qrText: 'CANADA', modeloEstatico: '#modeloCanadaEstatico', modeloAnimado: '#modeloCanadaAnimado', color: '#FF0000' },
+            { id: 'brasil', nombre: '', qrText: 'BRASIL', modeloEstatico: '#modeloBrasilEstatico', modeloAnimado: '#modeloBrasilAnimado', color: '#009C3B' },
+            { id: 'uruguay', nombre: '', qrText: 'URUGUAY', modeloEstatico: '#modeloUruguayEstatico', modeloAnimado: '#modeloUruguayAnimado', color: '#0038A8' },
+            { id: 'colombia', nombre: '', qrText: 'COLOMBIA', modeloEstatico: '#modeloColombiaEstatico', modeloAnimado: '#modeloColombiaAnimado', color: '#FCD116' },
+            { id: 'francia', nombre: '', qrText: 'FRANCIA', modeloEstatico: '#modeloFranciaEstatico', modeloAnimado: '#modeloFranciaAnimado', color: '#0055A4' },
+            { id: 'inglaterra', nombre: '', qrText: 'INGLATERRA', modeloEstatico: '#modeloInglaterraEstatico', modeloAnimado: '#modeloInglaterraAnimado', color: '#CE1124' },
+            { id: 'coreasur', nombre: '', qrText: 'COREASUR', modeloEstatico: '#modeloCoreaSurEstatico', modeloAnimado: '#modeloCoreaSurAnimado', color: '#0047A0' },
+            { id: 'japon', nombre: '', qrText: 'JAPON', modeloEstatico: '#modeloJaponEstatico', modeloAnimado: '#modeloJaponAnimado', color: '#BC002D' },
+            { id: 'australia', nombre: '', qrText: 'AUSTRALIA', modeloEstatico: '#modeloAustraliaEstatico', modeloAnimado: '#modeloAustraliaAnimado', color: '#00008B' },
+            { id: 'argentina', nombre: '', qrText: 'ARGENTINA', modeloEstatico: '#modeloArgentinaEstatico', modeloAnimado: '#modeloArgentinaAnimado', color: '#75AADB' }
         ];
 
         // Elementos DOM
@@ -160,7 +320,7 @@
         let modeloEstaticoActual = null, modeloAnimadoActual = null, isAnimated = false, paisActual = null;
         let ultimoQRScaneado = "", tiempoUltimoQR = 0;
 
-        // --- 3. MOSTRAR PAÍS (Ajustado para el centro) ---
+        // --- MOSTRAR PAÍS  ---
         function mostrarPais(pais) {
             while (contenedorModelos.firstChild) { contenedorModelos.removeChild(contenedorModelos.firstChild); }
             paisActual = pais;
@@ -199,7 +359,7 @@
             botonAnimacion.textContent = '▶️ Ver Animación';
         }
 
-        // --- 4. ESCANEO CONTINUO (Tu lógica original) ---
+        // --- ESCANEO CONTINUO ---
         async function iniciarCamara() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
