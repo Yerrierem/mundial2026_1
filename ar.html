@@ -33,41 +33,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: space-between;
             font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+            padding: 20px 0;
         }
 
-        .instrucciones, .qr-mensaje {
-            pointer-events: none;
-            color: white;
-            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
-            padding: 15px 25px;
-            margin-top: 20px;
-            border-radius: 50px;
-            text-align: center;
-            max-width: 280px;
-            border: 3px solid #FF8C00;
-            box-shadow: 0 6px 0 #063106;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .instrucciones::before, .qr-mensaje::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
+        /* Contenedor superior para mensajes */
+        .top-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
-            transition: left 0.7s;
             pointer-events: none;
-        }
-
-        .instrucciones:hover::before, .qr-mensaje:hover::before {
-            left: 100%;
         }
 
         #pais-activo {
@@ -100,10 +77,52 @@
             left: 100%;
         }
 
+        /* Contenedor inferior para mensajes y botones */
+        .bottom-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            padding-bottom: 30px;
+            pointer-events: none;
+        }
+
+        .instrucciones, .qr-mensaje {
+            pointer-events: none;
+            color: white;
+            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
+            padding: 15px 25px;
+            border-radius: 50px;
+            text-align: center;
+            max-width: 280px;
+            border: 3px solid #FF8C00;
+            box-shadow: 0 6px 0 #063106;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instrucciones::before, .qr-mensaje::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
+            transition: left 0.7s;
+            pointer-events: none;
+        }
+
+        .instrucciones:hover::before, .qr-mensaje:hover::before {
+            left: 100%;
+        }
+
         #boton-animacion {
             pointer-events: auto;
-            position: absolute;
-            bottom: 50px;
             padding: 16px 32px;
             background: linear-gradient(to right, #0a3d0a, #1e6b1e);
             color: white;
@@ -119,6 +138,7 @@
             font-size: 1.1rem;
             position: relative;
             overflow: hidden;
+            min-width: 200px;
         }
 
         #boton-animacion::before {
@@ -145,6 +165,56 @@
         #boton-animacion:active {
             transform: translateY(2px);
             box-shadow: 0 3px 0 #063106;
+        }
+
+        /* Botón de volver al inicio */
+        #boton-volver {
+            pointer-events: auto;
+            padding: 12px 24px;
+            background: linear-gradient(to right, #FF8C00, #FFA500);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 0 #cc7000;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #0a3d0a;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 180px;
+            text-align: center;
+        }
+
+        #boton-volver::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.7s;
+        }
+
+        #boton-volver:hover {
+            background: linear-gradient(to right, #FFA500, #FF8C00);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 9px 0 #cc7000;
+        }
+
+        #boton-volver:hover::before {
+            left: 100%;
+        }
+
+        #boton-volver:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #cc7000;
         }
 
         /* Video de escaneo (invisible) */
@@ -202,10 +272,18 @@
 <body>
 
     <div class="ui-container">
-        <div class="instrucciones" id="instrucciones">📱 Enfoca un código QR de país</div>
-        <div class="qr-mensaje" id="qr-mensaje" style="display: none;">Escaneando...</div>
-        <div id="pais-activo" style="display: none;"></div>
-        <button id="boton-animacion" style="display: none;">▶️ Ver Animación</button>
+        <!-- Contenedor superior para mensajes (solo país activo) -->
+        <div class="top-container">
+            <div id="pais-activo" style="display: none;"></div>
+        </div>
+        
+        <!-- Contenedor inferior para mensajes y botones -->
+        <div class="bottom-container">
+            <div class="instrucciones" id="instrucciones">📱 Enfoca un código QR de país</div>
+            <div class="qr-mensaje" id="qr-mensaje" style="display: none;">Escaneando...</div>
+            <button id="boton-animacion" style="display: none;">▶️ Ver Animación</button>
+            <a href="index.html" id="boton-volver">⬅️ Volver al Inicio</a>
+        </div>
     </div>
 
     <video id="qr-video" playsinline></video>
@@ -295,18 +373,18 @@
 
         // --- LÓGICA DE DATOS ---
         const paises = [
-            { id: 'mexico', nombre: '', qrText: 'MEXICO', modeloEstatico: '#modeloMexicoEstatico', modeloAnimado: '#modeloMexicoAnimado', color: '#CE1126' },
-            { id: 'estadosunidos', nombre: '', qrText: 'ESTADOSUNIDOS', modeloEstatico: '#modeloEstadosUnidosEstatico', modeloAnimado: '#modeloEstadosUnidosAnimado', color: '#B22234' },
-            { id: 'canada', nombre: '', qrText: 'CANADA', modeloEstatico: '#modeloCanadaEstatico', modeloAnimado: '#modeloCanadaAnimado', color: '#FF0000' },
-            { id: 'brasil', nombre: '', qrText: 'BRASIL', modeloEstatico: '#modeloBrasilEstatico', modeloAnimado: '#modeloBrasilAnimado', color: '#009C3B' },
-            { id: 'uruguay', nombre: '', qrText: 'URUGUAY', modeloEstatico: '#modeloUruguayEstatico', modeloAnimado: '#modeloUruguayAnimado', color: '#0038A8' },
-            { id: 'colombia', nombre: '', qrText: 'COLOMBIA', modeloEstatico: '#modeloColombiaEstatico', modeloAnimado: '#modeloColombiaAnimado', color: '#FCD116' },
-            { id: 'francia', nombre: '', qrText: 'FRANCIA', modeloEstatico: '#modeloFranciaEstatico', modeloAnimado: '#modeloFranciaAnimado', color: '#0055A4' },
-            { id: 'inglaterra', nombre: '', qrText: 'INGLATERRA', modeloEstatico: '#modeloInglaterraEstatico', modeloAnimado: '#modeloInglaterraAnimado', color: '#CE1124' },
-            { id: 'coreasur', nombre: '', qrText: 'COREASUR', modeloEstatico: '#modeloCoreaSurEstatico', modeloAnimado: '#modeloCoreaSurAnimado', color: '#0047A0' },
-            { id: 'japon', nombre: '', qrText: 'JAPON', modeloEstatico: '#modeloJaponEstatico', modeloAnimado: '#modeloJaponAnimado', color: '#BC002D' },
-            { id: 'australia', nombre: '', qrText: 'AUSTRALIA', modeloEstatico: '#modeloAustraliaEstatico', modeloAnimado: '#modeloAustraliaAnimado', color: '#00008B' },
-            { id: 'argentina', nombre: '', qrText: 'ARGENTINA', modeloEstatico: '#modeloArgentinaEstatico', modeloAnimado: '#modeloArgentinaAnimado', color: '#75AADB' }
+            { id: 'mexico', nombre: 'MÉXICO', qrText: 'MEXICO', modeloEstatico: '#modeloMexicoEstatico', modeloAnimado: '#modeloMexicoAnimado', color: '#CE1126' },
+            { id: 'estadosunidos', nombre: 'ESTADOS UNIDOS', qrText: 'ESTADOSUNIDOS', modeloEstatico: '#modeloEstadosUnidosEstatico', modeloAnimado: '#modeloEstadosUnidosAnimado', color: '#B22234' },
+            { id: 'canada', nombre: 'CANADÁ', qrText: 'CANADA', modeloEstatico: '#modeloCanadaEstatico', modeloAnimado: '#modeloCanadaAnimado', color: '#FF0000' },
+            { id: 'brasil', nombre: 'BRASIL', qrText: 'BRASIL', modeloEstatico: '#modeloBrasilEstatico', modeloAnimado: '#modeloBrasilAnimado', color: '#009C3B' },
+            { id: 'uruguay', nombre: 'URUGUAY', qrText: 'URUGUAY', modeloEstatico: '#modeloUruguayEstatico', modeloAnimado: '#modeloUruguayAnimado', color: '#0038A8' },
+            { id: 'colombia', nombre: 'COLOMBIA', qrText: 'COLOMBIA', modeloEstatico: '#modeloColombiaEstatico', modeloAnimado: '#modeloColombiaAnimado', color: '#FCD116' },
+            { id: 'francia', nombre: 'FRANCIA', qrText: 'FRANCIA', modeloEstatico: '#modeloFranciaEstatico', modeloAnimado: '#modeloFranciaAnimado', color: '#0055A4' },
+            { id: 'inglaterra', nombre: 'INGLATERRA', qrText: 'INGLATERRA', modeloEstatico: '#modeloInglaterraEstatico', modeloAnimado: '#modeloInglaterraAnimado', color: '#CE1124' },
+            { id: 'coreasur', nombre: 'COREA DEL SUR', qrText: 'COREASUR', modeloEstatico: '#modeloCoreaSurEstatico', modeloAnimado: '#modeloCoreaSurAnimado', color: '#0047A0' },
+            { id: 'japon', nombre: 'JAPÓN', qrText: 'JAPON', modeloEstatico: '#modeloJaponEstatico', modeloAnimado: '#modeloJaponAnimado', color: '#BC002D' },
+            { id: 'australia', nombre: 'AUSTRALIA', qrText: 'AUSTRALIA', modeloEstatico: '#modeloAustraliaEstatico', modeloAnimado: '#modeloAustraliaAnimado', color: '#00008B' },
+            { id: 'argentina', nombre: 'ARGENTINA', qrText: 'ARGENTINA', modeloEstatico: '#modeloArgentinaEstatico', modeloAnimado: '#modeloArgentinaAnimado', color: '#75AADB' }
         ];
 
         // Elementos DOM
@@ -316,6 +394,7 @@
         const paisActivo = document.getElementById("pais-activo");
         const qrVideo = document.getElementById("qr-video");
         const contenedorModelos = document.getElementById("contenedor-modelos");
+        const botonVolver = document.getElementById("boton-volver");
 
         let modeloEstaticoActual = null, modeloAnimadoActual = null, isAnimated = false, paisActual = null;
         let ultimoQRScaneado = "", tiempoUltimoQR = 0;
@@ -338,6 +417,7 @@
             modeloEstaticoActual = document.createElement('a-gltf-model');
             modeloEstaticoActual.setAttribute('src', pais.modeloEstatico);
             modeloEstaticoActual.setAttribute('scale', '0.5 0.5 0.5'); 
+            modeloEstaticoActual.setAttribute('position', '0 0 0');
             contenedorModelos.appendChild(modeloEstaticoActual);
 
             // Modelo Animado
@@ -345,6 +425,7 @@
             modeloAnimadoActual.setAttribute('gltf-model', pais.modeloAnimado);
             modeloAnimadoActual.setAttribute('custom-animation-mixer', 'autoPlay: false');
             modeloAnimadoActual.setAttribute('scale', '0.5 0.5 0.5');
+            modeloAnimadoActual.setAttribute('position', '0 0 0');
             modeloAnimadoActual.setAttribute('visible', 'false');
             contenedorModelos.appendChild(modeloAnimadoActual);
 
@@ -366,16 +447,20 @@
                 qrVideo.srcObject = stream;
                 qrVideo.play();
                 requestAnimationFrame(scanQR);
-            } catch (err) { alert("Error cámara: " + err); }
+            } catch (err) { 
+                alert("Error al acceder a la cámara: " + err); 
+            }
         }
 
         function scanQR() {
             if (qrVideo.readyState === qrVideo.HAVE_ENOUGH_DATA) {
                 const canvas = document.createElement("canvas");
-                canvas.width = qrVideo.videoWidth; canvas.height = qrVideo.videoHeight;
+                canvas.width = qrVideo.videoWidth; 
+                canvas.height = qrVideo.videoHeight;
                 const ctx = canvas.getContext("2d");
                 ctx.drawImage(qrVideo, 0, 0, canvas.width, canvas.height);
-                const code = jsQR(ctx.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height);
 
                 if (code) {
                     const qrText = code.data.trim().toUpperCase();
@@ -397,13 +482,17 @@
         botonAnimacion.addEventListener("click", () => {
             if (isAnimated) {
                 modeloAnimadoActual.setAttribute('visible', 'false');
-                modeloAnimadoActual.components['custom-animation-mixer'].stopAnimation();
+                if (modeloAnimadoActual.components['custom-animation-mixer']) {
+                    modeloAnimadoActual.components['custom-animation-mixer'].stopAnimation();
+                }
                 modeloEstaticoActual.setAttribute('visible', 'true');
                 botonAnimacion.textContent = '▶️ Ver Animación';
             } else {
                 modeloEstaticoActual.setAttribute('visible', 'false');
                 modeloAnimadoActual.setAttribute('visible', 'true');
-                modeloAnimadoActual.components['custom-animation-mixer'].playAnimation();
+                if (modeloAnimadoActual.components['custom-animation-mixer']) {
+                    modeloAnimadoActual.components['custom-animation-mixer'].playAnimation();
+                }
                 botonAnimacion.textContent = '⏹️ Ver Estático';
             }
             isAnimated = !isAnimated;
