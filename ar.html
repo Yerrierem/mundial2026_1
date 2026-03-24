@@ -417,7 +417,7 @@
             modeloEstaticoActual = document.createElement('a-gltf-model');
             modeloEstaticoActual.setAttribute('src', pais.modeloEstatico);
             modeloEstaticoActual.setAttribute('scale', '1.2 1.2 1.2'); // MÁS GRANDE
-            modeloEstaticoActual.setAttribute('position', '0 0 0');
+            modeloEstaticoActual.setAttribute('position', '0 -1 0');
             contenedorModelos.appendChild(modeloEstaticoActual);
 
             // Modelo Animado - ESCALA AUMENTADA DE 0.5 a 1.2
@@ -425,7 +425,7 @@
             modeloAnimadoActual.setAttribute('gltf-model', pais.modeloAnimado);
             modeloAnimadoActual.setAttribute('custom-animation-mixer', 'autoPlay: false');
             modeloAnimadoActual.setAttribute('scale', '1.2 1.2 1.2'); // MÁS GRANDE
-            modeloAnimadoActual.setAttribute('position', '0 0 0');
+            modeloAnimadoActual.setAttribute('position', '0 -1 0');
             modeloAnimadoActual.setAttribute('visible', 'false');
             contenedorModelos.appendChild(modeloAnimadoActual);
 
