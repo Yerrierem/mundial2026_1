@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Realidad Aumentada - QR</title>
+    <title>Realidad Aumentada - QR NV</title>
     
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -416,7 +416,7 @@
             // Modelo Estático
             modeloEstaticoActual = document.createElement('a-gltf-model');
             modeloEstaticoActual.setAttribute('src', pais.modeloEstatico);
-            modeloEstaticoActual.setAttribute('scale', '1.2 1.2 1.2'); 
+            modeloEstaticoActual.setAttribute('scale', '1.0 1.0 1.0'); 
             modeloEstaticoActual.setAttribute('position', '0 -1 0');
             contenedorModelos.appendChild(modeloEstaticoActual);
 
@@ -424,7 +424,7 @@
             modeloAnimadoActual = document.createElement('a-entity');
             modeloAnimadoActual.setAttribute('gltf-model', pais.modeloAnimado);
             modeloAnimadoActual.setAttribute('custom-animation-mixer', 'autoPlay: false');
-            modeloAnimadoActual.setAttribute('scale', '1.2 1.2 1.2');
+            modeloAnimadoActual.setAttribute('scale', '1.0 1.0 1.0');
             modeloAnimadoActual.setAttribute('position', '0 -1 0');
             modeloAnimadoActual.setAttribute('visible', 'false');
             contenedorModelos.appendChild(modeloAnimadoActual);
