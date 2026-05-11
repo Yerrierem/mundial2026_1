@@ -1,506 +1,583 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Realidad Aumentada - Banderas Mundialistas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>Realidad Aumentada - Banderas del Mundo</title>
+    <!-- A-Frame y MindAR -->
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.3/dist/mindar-image-aframe.prod.js"></script>
     
-    <!-- Importar librerías necesarias -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-                "mindar-image-three": "https://unpkg.com/mindar-image-three@1.2.0/dist/mindar-image-three.js"
-            }
-        }
-    </script>
-
     <style>
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
             overflow: hidden;
-            background-color: #0a3d0a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        /* Contenedor principal de AR */
-        #mindar-container {
+        
+        .info-panel {
             position: fixed;
-            top: 0;
-            left: 0;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 12px 20px;
+            text-align: center;
+            color: white;
+            z-index: 998;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .info-panel.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        a-scene {
             width: 100%;
-            height: 100%;
-            z-index: 1;
+            height: 100vh;
         }
 
-        /* Interfaz de usuario (Capa superior) */
-        .ui-container {
+        #toggle-animation-btn {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 0;
-        }
-
-        .top-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            pointer-events: none;
-        }
-
-        #pais-activo {
-            background: linear-gradient(to right, #FF8C00, #FFA500);
-            color: white;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: bold;
-            margin-top: 10px;
-            box-shadow: 0 6px 0 #cc7000;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border: 2px solid #0a3d0a;
-            display: none;
-            animation: bounce 0.5s ease;
-        }
-
-        .bottom-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            width: 100%;
-            padding-bottom: 30px;
-            pointer-events: none;
-        }
-
-        .instrucciones {
-            pointer-events: none;
-            color: white;
-            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
-            padding: 15px 25px;
-            border-radius: 50px;
-            text-align: center;
-            max-width: 280px;
-            border: 3px solid #FF8C00;
-            box-shadow: 0 6px 0 #063106;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-        }
-
-        .mensaje-detalle {
-            pointer-events: none;
-            color: white;
-            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
-            padding: 15px 25px;
-            border-radius: 50px;
-            text-align: center;
-            max-width: 280px;
-            border: 3px solid #FF8C00;
-            box-shadow: 0 6px 0 #063106;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: bold;
-            display: none;
-        }
-
-        #boton-animacion {
-            pointer-events: auto;
-            padding: 16px 32px;
-            background: linear-gradient(to right, #0a3d0a, #1e6b1e);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 6px 0 #063106;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid #FF8C00;
-            font-size: 1.1rem;
-            display: none;
-            min-width: 200px;
-        }
-
-        #boton-animacion:hover {
-            background: linear-gradient(to right, #1e6b1e, #0a3d0a);
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 9px 0 #063106;
-        }
-
-        #boton-animacion:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 0 #063106;
-        }
-
-        #boton-volver {
-            pointer-events: auto;
+            top: 20px;
+            right: 20px;
             padding: 12px 24px;
-            background: linear-gradient(to right, #FF8C00, #FFA500);
+            font-size: 16px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #1e2a78, #0f172a);
             color: white;
             border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 6px 0 #cc7000;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid #0a3d0a;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-block;
-            min-width: 180px;
-            text-align: center;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background 0.2s;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
-
-        #boton-volver:hover {
-            background: linear-gradient(to right, #FFA500, #FF8C00);
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 9px 0 #cc7000;
+        
+        #toggle-animation-btn:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #2a3a9a, #1e2a6a);
         }
-
-        #boton-volver:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 0 #cc7000;
+        
+        #toggle-animation-btn:active {
+            transform: scale(0.98);
         }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        
+        @media (max-width: 600px) {
+            #toggle-animation-btn {
+                padding: 8px 18px;
+                font-size: 14px;
+                top: 16px;
+                right: 16px;
+            }
+            .info-panel {
+                font-size: 12px;
+                bottom: 16px;
+                left: 16px;
+                right: 16px;
+                padding: 8px 16px;
+            }
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* Decoración */
-        .ui-container::before {
-            content: "";
+        
+        /* Estilo para loading opcional */
+        .loading-message {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: repeating-linear-gradient(90deg, #0a3d0a, #0a3d0a 20px, #FF8C00 20px, #FF8C00 40px);
-            z-index: 11;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            z-index: 1000;
+            font-size: 14px;
             pointer-events: none;
-        }
-
-        .ui-container::after {
-            content: "";
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: repeating-linear-gradient(90deg, #FF8C00, #FF8C00 20px, #0a3d0a 20px, #0a3d0a 40px);
-            z-index: 11;
-            pointer-events: none;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
-
-    <div id="mindar-container"></div>
-
-    <div class="ui-container">
-        <div class="top-container">
-            <div id="pais-activo"></div>
-        </div>
-        
-        <div class="bottom-container">
-            <div class="instrucciones" id="instrucciones">🏆 Apunta a una bandera mundialista 🏆</div>
-            <div class="mensaje-detalle" id="mensaje-detalle"></div>
-            <button id="boton-animacion">▶️ Ver Animación</button>
-            <a href="index.html" id="boton-volver">⬅️ Volver al Inicio</a>
-        </div>
+    <div class="info-panel" id="info-panel">
+        🏁 Escanea una bandera para ver el modelo 3D del país
     </div>
 
-    <script type="module">
-        import * as THREE from "three";
-        import { MindARThree } from "mindar-image-three";
+    <button id="toggle-animation-btn">🎬 Ver Animación</button> 
 
-        // ==================== CONFIGURACIÓN DE PAÍSES ====================
-        // Orden alfabético según tu targets.mind:
-        // 0: Argentina, 1: Australia, 2: Brasil, 3: Canadá, 4: Colombia, 
-        // 5: CoreaSur, 6: EstadosUnidos, 7: Francia, 8: Inglaterra, 
-        // 9: Japón, 10: México, 11: Uruguay
+    <a-scene
+        mindar-image="imageTargetSrc: ./assets/targets.mind; autoStart: true; detectionInterval: 100;"
+        color-space="sRGB"
+        renderer="colorManagement: true; physicallyCorrectLights: true; antialias: true;"
+        vr-mode-ui="enabled: false"
+        device-orientation-permission-ui="enabled: true"
+    >
+        <a-assets>
+            <!-- Listado completo de modelos estáticos y animados para todos los países, según el orden solicitado:
+                 Orden: Argentina, Australia, Brasil, Canadá, Corea del sur, Uruguay, Estados Unidos, Francia, Japón, Colombia, México, Inglaterra 
+                 Nombres de archivos: Pais.glb (estático) y PaisA.glb (animado) 
+                 Nota: Ajustamos los nombres según la convención dada (Ej: EstadosUnidos.glb, EstadosUnidosA.glb). 
+                 Corea del sur -> CoreaSur.glb / CoreaSurA.glb, Uruguay.glb / UruguayA.glb, etc. 
+                 Se asume que los archivos existen en la carpeta ./assets/ con la nomenclatura correcta. -->
+                 
+            <!-- ARGENTINA (índice 0) -->
+            <a-asset-item id="modeloArgentinaEstatico" src="./assets/Argentina.glb"></a-asset-item>
+            <a-asset-item id="modeloArgentinaAnimado" src="./assets/ArgentinaA.glb"></a-asset-item>
+            
+            <!-- AUSTRALIA (índice 1) -->
+            <a-asset-item id="modeloAustraliaEstatico" src="./assets/Australia.glb"></a-asset-item>
+            <a-asset-item id="modeloAustraliaAnimado" src="./assets/AustraliaA.glb"></a-asset-item>
+            
+            <!-- BRASIL (índice 2) -->
+            <a-asset-item id="modeloBrasilEstatico" src="./assets/Brasil.glb"></a-asset-item>
+            <a-asset-item id="modeloBrasilAnimado" src="./assets/BrasilA.glb"></a-asset-item>
+            
+            <!-- CANADÁ (índice 3) -->
+            <a-asset-item id="modeloCanadaEstatico" src="./assets/Canada.glb"></a-asset-item>
+            <a-asset-item id="modeloCanadaAnimado" src="./assets/CanadaA.glb"></a-asset-item>
+            
+            <!-- COREA DEL SUR (índice 4) -->
+            <a-asset-item id="modeloCoreaEstatico" src="./assets/CoreaSur.glb"></a-asset-item>
+            <a-asset-item id="modeloCoreaAnimado" src="./assets/CoreaSurA.glb"></a-asset-item>
+            
+            <!-- URUGUAY (índice 5) -->
+            <a-asset-item id="modeloUruguayEstatico" src="./assets/Uruguay.glb"></a-asset-item>
+            <a-asset-item id="modeloUruguayAnimado" src="./assets/UruguayA.glb"></a-asset-item>
+            
+            <!-- ESTADOS UNIDOS (índice 6) -->
+            <a-asset-item id="modeloUsaEstatico" src="./assets/EstadosUnidos.glb"></a-asset-item>
+            <a-asset-item id="modeloUsaAnimado" src="./assets/EstadosUnidosA.glb"></a-asset-item>
+            
+            <!-- FRANCIA (índice 7) -->
+            <a-asset-item id="modeloFranciaEstatico" src="./assets/Francia.glb"></a-asset-item>
+            <a-asset-item id="modeloFranciaAnimado" src="./assets/FranciaA.glb"></a-asset-item>
+            
+            <!-- JAPÓN (índice 8) -->
+            <a-asset-item id="modeloJaponEstatico" src="./assets/Japon.glb"></a-asset-item>
+            <a-asset-item id="modeloJaponAnimado" src="./assets/JaponA.glb"></a-asset-item>
+            
+            <!-- COLOMBIA (índice 9) -->
+            <a-asset-item id="modeloColombiaEstatico" src="./assets/Colombia.glb"></a-asset-item>
+            <a-asset-item id="modeloColombiaAnimado" src="./assets/ColombiaA.glb"></a-asset-item>
+            
+            <!-- MÉXICO (índice 10) -->
+            <a-asset-item id="modeloMexicoEstatico" src="./assets/Mexico.glb"></a-asset-item>
+            <a-asset-item id="modeloMexicoAnimado" src="./assets/MexicoA.glb"></a-asset-item>
+            
+            <!-- INGLATERRA (índice 11) -->
+            <a-asset-item id="modeloInglaterraEstatico" src="./assets/Inglaterra.glb"></a-asset-item>
+            <a-asset-item id="modeloInglaterraAnimado" src="./assets/InglaterraA.glb"></a-asset-item>
+        </a-assets>
+
+        <!-- Cámara -->
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+        <!-- Iluminación mejorada para buena visibilidad de modelos -->
+        <a-entity light="type: ambient; color: #FFFFFF; intensity: 0.85"></a-entity>
+        <a-entity light="type: directional; color: #FFF; intensity: 0.9" position="1 2 1.5"></a-entity>
+        <a-entity light="type: directional; color: #FFEECC; intensity: 0.5" position="-1 1.5 -0.8"></a-entity>
         
-        const paises = [
-            { id: 'argentina', nombre: 'Argentina', targetIndex: 0, modeloEstatico: './assets/Argentina.glb', modeloAnimado: './assets/ArgentinaA.glb', color: '#75AADB' },
-            { id: 'australia', nombre: 'Australia', targetIndex: 1, modeloEstatico: './assets/Australia.glb', modeloAnimado: './assets/AustraliaA.glb', color: '#00008B' },
-            { id: 'brasil', nombre: 'Brasil', targetIndex: 2, modeloEstatico: './assets/Brasil.glb', modeloAnimado: './assets/BrasilA.glb', color: '#009C3B' },
-            { id: 'canada', nombre: 'Canadá', targetIndex: 3, modeloEstatico: './assets/Canada.glb', modeloAnimado: './assets/CanadaA.glb', color: '#FF0000' },
-            { id: 'colombia', nombre: 'Colombia', targetIndex: 4, modeloEstatico: './assets/Colombia.glb', modeloAnimado: './assets/ColombiaA.glb', color: '#FCD116' },
-            { id: 'coreasur', nombre: 'Corea del Sur', targetIndex: 5, modeloEstatico: './assets/CoreaSur.glb', modeloAnimado: './assets/CoreaSurA.glb', color: '#0047A0' },
-            { id: 'estadosunidos', nombre: 'Estados Unidos', targetIndex: 6, modeloEstatico: './assets/EstadosUnidos.glb', modeloAnimado: './assets/EstadosUnidosA.glb', color: '#B22234' },
-            { id: 'francia', nombre: 'Francia', targetIndex: 7, modeloEstatico: './assets/Francia.glb', modeloAnimado: './assets/FranciaA.glb', color: '#0055A4' },
-            { id: 'inglaterra', nombre: 'Inglaterra', targetIndex: 8, modeloEstatico: './assets/Inglaterra.glb', modeloAnimado: './assets/InglaterraA.glb', color: '#CE1124' },
-            { id: 'japon', nombre: 'Japón', targetIndex: 9, modeloEstatico: './assets/Japon.glb', modeloAnimado: './assets/JaponA.glb', color: '#BC002D' },
-            { id: 'mexico', nombre: 'México', targetIndex: 10, modeloEstatico: './assets/Mexico.glb', modeloAnimado: './assets/MexicoA.glb', color: '#CE1126' },
-            { id: 'uruguay', nombre: 'Uruguay', targetIndex: 11, modeloEstatico: './assets/Uruguay.glb', modeloAnimado: './assets/UruguayA.glb', color: '#0038A8' }
-        ];
-
-        // Elementos DOM
-        const instruccionesDiv = document.getElementById("instrucciones");
-        const mensajeDetalle = document.getElementById("mensaje-detalle");
-        const botonAnimacion = document.getElementById("boton-animacion");
-        const paisActivoDiv = document.getElementById("pais-activo");
+        <!-- ==================== TARGETS (12 targets según orden: Argentina, Australia, Brasil, Canadá, CoreaSur, Uruguay, USA, Francia, Japón, Colombia, México, Inglaterra) ==================== -->
         
-        // Variables de estado
-        let currentCountry = null;
-        let currentModelStatic = null;
-        let currentModelAnimated = null;
-        let isAnimated = false;
-        let mixer = null;
-        let clock = new THREE.Clock();
-        let mindarThree = null;
+        <!-- 1. ARGENTINA - targetIndex 0 -->
+        <a-entity id="target-argentina" mindar-image-target="targetIndex: 0">
+            <a-text id="texto-argentina" value="🇦🇷 ARGENTINA" color="#75AADB" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-argentina-estatico" src="#modeloArgentinaEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-argentina-animado" gltf-model="#modeloArgentinaAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
         
-        const anchors = {};
-
-        // ==================== FUNCIÓN PARA CARGAR MODELOS ====================
-        async function loadModel(url, isAnimatedModel = false) {
-            return new Promise((resolve, reject) => {
-                const loader = new THREE.GLTFLoader();
-                loader.load(url, (gltf) => {
-                    const model = gltf.scene;
-                    
-                    // Si es modelo animado y tiene animaciones
-                    if (isAnimatedModel && gltf.animations && gltf.animations.length > 0) {
-                        model.userData = { animations: gltf.animations };
-                    }
-                    
-                    // Escalar y posicionar el modelo
-                    model.scale.set(0.5, 0.5, 0.5);
-                    model.position.set(0, -0.5, 0);
-                    
-                    resolve(model);
-                }, undefined, reject);
-            });
-        }
-
-        // ==================== FUNCIÓN PARA CREAR TEXTO FLOTANTE ====================
-        function createTextLabel(text, color) {
-            const canvas = document.createElement("canvas");
-            canvas.width = 512;
-            canvas.height = 256;
-            const ctx = canvas.getContext("2d");
-            
-            ctx.fillStyle = "rgba(0,0,0,0.7)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = color;
-            ctx.font = "Bold 40px Arial";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(text, canvas.width/2, canvas.height/2);
-            
-            const texture = new THREE.CanvasTexture(canvas);
-            const material = new THREE.SpriteMaterial({ map: texture });
-            const sprite = new THREE.Sprite(material);
-            sprite.scale.set(1.5, 0.75, 1);
-            sprite.position.set(0, 0.8, 0);
-            
-            return sprite;
-        }
-
-        // ==================== DETECCIÓN DE BANDERA ====================
-        async function onFlagDetected(countryId) {
-            const pais = paises.find(p => p.id === countryId);
-            if (!pais) return;
-            
-            currentCountry = pais;
-            
-            // Actualizar UI
-            paisActivoDiv.style.display = "block";
-            paisActivoDiv.innerHTML = `📍 ${pais.nombre}`;
-            instruccionesDiv.style.display = "none";
-            mensajeDetalle.style.display = "block";
-            mensajeDetalle.innerHTML = `✅ ${pais.nombre} detectado`;
-            botonAnimacion.style.display = "block";
-            
-            const group = anchors[pais.id].group;
-            
-            // Limpiar grupo
-            while(group.children.length > 0) {
-                group.remove(group.children[0]);
-            }
-            
-            // Agregar texto flotante
-            const textSprite = createTextLabel(pais.nombre, pais.color);
-            group.add(textSprite);
-            
-            // Cargar modelo estático
-            try {
-                const staticModel = await loadModel(pais.modeloEstatico, false);
-                staticModel.userData = { isStatic: true };
-                group.add(staticModel);
-                currentModelStatic = staticModel;
-                
-                // Cargar modelo animado
-                const animatedModel = await loadModel(pais.modeloAnimado, true);
-                animatedModel.visible = false;
-                animatedModel.userData = { isStatic: false, animations: animatedModel.userData?.animations || [] };
-                group.add(animatedModel);
-                currentModelAnimated = animatedModel;
-                
-                // Configurar animaciones si existen
-                if (animatedModel.userData.animations && animatedModel.userData.animations.length > 0) {
-                    mixer = new THREE.AnimationMixer(animatedModel);
-                    const action = mixer.clipAction(animatedModel.userData.animations[0]);
-                    action.stop();
-                    animatedModel.userData.action = action;
-                }
-                
-            } catch (error) {
-                console.error("Error cargando modelos:", error);
-                mensajeDetalle.innerHTML = "❌ Error cargando modelo 3D";
-            }
-        }
+        <!-- 2. AUSTRALIA - targetIndex 1 -->
+        <a-entity id="target-australia" mindar-image-target="targetIndex: 1">
+            <a-text id="texto-australia" value="🇦🇺 AUSTRALIA" color="#E8A735" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-australia-estatico" src="#modeloAustraliaEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-australia-animado" gltf-model="#modeloAustraliaAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
         
-        function onFlagLost() {
-            if (currentCountry) {
-                currentCountry = null;
-                currentModelStatic = null;
-                currentModelAnimated = null;
-                isAnimated = false;
-                
-                // Resetear UI
-                paisActivoDiv.style.display = "none";
-                instruccionesDiv.style.display = "block";
-                mensajeDetalle.style.display = "none";
-                botonAnimacion.style.display = "none";
-                botonAnimacion.textContent = "▶️ Ver Animación";
-                
-                // Detener animación si estaba activa
-                if (mixer) {
-                    mixer.stopAllAction();
-                    mixer = null;
-                }
-            }
-        }
+        <!-- 3. BRASIL - targetIndex 2 -->
+        <a-entity id="target-brasil" mindar-image-target="targetIndex: 2">
+            <a-text id="texto-brasil" value="🇧🇷 BRASIL" color="#46A546" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-brasil-estatico" src="#modeloBrasilEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-brasil-animado" gltf-model="#modeloBrasilAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 4. CANADÁ - targetIndex 3 -->
+        <a-entity id="target-canada" mindar-image-target="targetIndex: 3">
+            <a-text id="texto-canada" value="🇨🇦 CANADÁ" color="#DD2E44" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-canada-estatico" src="#modeloCanadaEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-canada-animado" gltf-model="#modeloCanadaAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 5. COREA DEL SUR - targetIndex 4 -->
+        <a-entity id="target-corea" mindar-image-target="targetIndex: 4">
+            <a-text id="texto-corea" value="🇰🇷 COREA DEL SUR" color="#4B4B4B" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-corea-estatico" src="#modeloCoreaEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-corea-animado" gltf-model="#modeloCoreaAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 6. URUGUAY - targetIndex 5 -->
+        <a-entity id="target-uruguay" mindar-image-target="targetIndex: 5">
+            <a-text id="texto-uruguay" value="🇺🇾 URUGUAY" color="#75AADB" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-uruguay-estatico" src="#modeloUruguayEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-uruguay-animado" gltf-model="#modeloUruguayAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 7. ESTADOS UNIDOS - targetIndex 6 -->
+        <a-entity id="target-usa" mindar-image-target="targetIndex: 6">
+            <a-text id="texto-usa" value="🇺🇸 ESTADOS UNIDOS" color="#3C6E71" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-usa-estatico" src="#modeloUsaEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-usa-animado" gltf-model="#modeloUsaAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 8. FRANCIA - targetIndex 7 -->
+        <a-entity id="target-francia" mindar-image-target="targetIndex: 7">
+            <a-text id="texto-francia" value="🇫🇷 FRANCIA" color="#2C5F8A" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-francia-estatico" src="#modeloFranciaEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-francia-animado" gltf-model="#modeloFranciaAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 9. JAPÓN - targetIndex 8 -->
+        <a-entity id="target-japon" mindar-image-target="targetIndex: 8">
+            <a-text id="texto-japon" value="🇯🇵 JAPÓN" color="#B22222" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-japon-estatico" src="#modeloJaponEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-japon-animado" gltf-model="#modeloJaponAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 10. COLOMBIA - targetIndex 9 -->
+        <a-entity id="target-colombia" mindar-image-target="targetIndex: 9">
+            <a-text id="texto-colombia" value="🇨🇴 COLOMBIA" color="#F4C300" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-colombia-estatico" src="#modeloColombiaEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-colombia-animado" gltf-model="#modeloColombiaAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 11. MÉXICO - targetIndex 10 -->
+        <a-entity id="target-mexico" mindar-image-target="targetIndex: 10">
+            <a-text id="texto-mexico" value="🇲🇽 MÉXICO" color="#C53A1F" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-mexico-estatico" src="#modeloMexicoEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-mexico-animado" gltf-model="#modeloMexicoAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+        <!-- 12. INGLATERRA - targetIndex 11 -->
+        <a-entity id="target-inglaterra" mindar-image-target="targetIndex: 11">
+            <a-text id="texto-inglaterra" value="🏴󠁧󠁢󠁥󠁮󠁧󠁿 INGLATERRA" color="#CF142B" align="center" position="0 0.12 0" scale="1.8 1.8 1.8" width="6" visible="false"></a-text>
+            <a-gltf-model id="modelo-inglaterra-estatico" src="#modeloInglaterraEstatico" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-gltf-model>
+            <a-entity id="modelo-inglaterra-animado" gltf-model="#modeloInglaterraAnimado" custom-animation-mixer="clipIndex: 0; autoPlay: false; loop: repeat" position="0 0 0" scale="0.22 0.22 0.22" rotation="0 0 0" visible="false"></a-entity>
+        </a-entity>
+        
+    </a-scene>
 
-        // ==================== INICIALIZAR MINDAR ====================
-        async function initMindAR() {
-            try {
-                mindarThree = new MindARThree({
-                    container: document.querySelector('#mindar-container'),
-                    imageTargetSrc: 'targets.mind', // Tu archivo con las 12 banderas en orden alfabético
-                    uiLoading: 'none',
-                    uiError: 'none',
-                    uiScanning: 'none'
+    <script>
+        // Registrar el componente de animación personalizado (manejo de clips GLTF)
+        AFRAME.registerComponent('custom-animation-mixer', {
+            schema: {
+                clipIndex: { type: 'int', default: 0 },
+                clipName: { type: 'string', default: '' },
+                autoPlay: { type: 'boolean', default: false },  // manual mediante botón
+                loop: { type: 'boolean', default: true },
+                timeScale: { type: 'number', default: 1 }
+            },
+            
+            init: function() {
+                this.mixer = null;
+                this.actions = [];
+                this.animations = [];
+                this.isPlaying = false;
+                this.model = null;
+                
+                this.el.addEventListener('model-loaded', (e) => {
+                    this.model = e.detail.model;
+                    this.setupAnimations(this.model);
                 });
+            },
+            
+            setupAnimations: function(model) {
+                this.animations = [];
+                this.actions = [];
+                if (!model) return;
                 
-                const { renderer, scene, camera } = mindarThree;
-                
-                // Crear anchors para cada país
-                paises.forEach(pais => {
-                    try {
-                        anchors[pais.id] = mindarThree.addAnchor(pais.targetIndex);
-                        anchors[pais.id].group.visible = false;
-                        
-                        anchors[pais.id].onTargetFound = () => {
-                            console.log(`✅ Detectado: ${pais.nombre}`);
-                            anchors[pais.id].group.visible = true;
-                            onFlagDetected(pais.id);
-                        };
-                        
-                        anchors[pais.id].onTargetLost = () => {
-                            console.log(`❌ Perdido: ${pais.nombre}`);
-                            anchors[pais.id].group.visible = false;
-                            onFlagLost();
-                        };
-                        
-                    } catch (e) {
-                        console.warn(`Error creando anchor para ${pais.nombre}:`, e);
-                    }
-                });
-                
-                // Iluminación mejorada
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-                scene.add(ambientLight);
-                
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-                directionalLight.position.set(1, 2, 1);
-                scene.add(directionalLight);
-                
-                const backLight = new THREE.DirectionalLight(0xffffff, 0.4);
-                backLight.position.set(-1, 1, -1);
-                scene.add(backLight);
-                
-                // Iniciar MindAR
-                await mindarThree.start();
-                console.log("🎯 MindAR iniciado correctamente");
-                
-                // Loop de renderizado
-                renderer.setAnimationLoop(() => {
-                    renderer.render(scene, camera);
-                    if (mixer) {
-                        const delta = clock.getDelta();
-                        mixer.update(delta);
+                model.traverse((node) => {
+                    if (node.animations && node.animations.length > 0) {
+                        node.animations.forEach((clip) => {
+                            this.animations.push({
+                                name: clip.name,
+                                clip: clip,
+                                node: node
+                            });
+                        });
                     }
                 });
                 
-            } catch (err) {
-                console.error('❌ Error inicializando MindAR:', err);
-                instruccionesDiv.innerHTML = "⚠️ Error: No se pudo iniciar la cámara AR";
-            }
-        }
-        
-        // ==================== MANEJAR BOTÓN DE ANIMACIÓN ====================
-        botonAnimacion.addEventListener("click", () => {
-            if (!currentCountry || !currentModelStatic || !currentModelAnimated) return;
+                if (this.animations.length > 0 && typeof THREE !== 'undefined' && THREE.AnimationMixer) {
+                    this.mixer = new THREE.AnimationMixer(model);
+                    this.animations.forEach((anim) => {
+                        const action = this.mixer.clipAction(anim.clip);
+                        action.clipName = anim.name;
+                        this.actions.push(action);
+                    });
+                    
+                    if (this.data.autoPlay) {
+                        this.playAnimation();
+                    }
+                } else if (this.animations.length > 0) {
+                    console.warn("THREE.AnimationMixer no disponible, pero se encontraron animaciones.");
+                }
+            },
             
-            if (!isAnimated) {
-                // Cambiar a animado
-                currentModelStatic.visible = false;
-                currentModelAnimated.visible = true;
-                
-                // Reproducir animación
-                if (currentModelAnimated.userData.action) {
-                    currentModelAnimated.userData.action.reset();
-                    currentModelAnimated.userData.action.play();
+            playAnimation: function(clipIndex = null) {
+                if (!this.mixer || this.actions.length === 0) {
+                    return;
                 }
+                const index = (clipIndex !== null) ? clipIndex : this.data.clipIndex;
+                if (index >= this.actions.length) return;
                 
-                botonAnimacion.textContent = "⏹️ Ver Estático";
-                isAnimated = true;
-                mensajeDetalle.innerHTML = `🎬 ${currentCountry.nombre} - Modo Animación`;
-            } else {
-                // Cambiar a estático
-                currentModelStatic.visible = true;
-                currentModelAnimated.visible = false;
-                
-                // Detener animación
-                if (currentModelAnimated.userData.action) {
-                    currentModelAnimated.userData.action.stop();
+                this.stopAnimation();
+                const action = this.actions[index];
+                if (this.data.loop) {
+                    action.setLoop(THREE.LoopRepeat, Infinity);
+                } else {
+                    action.setLoop(THREE.LoopOnce, 1);
                 }
-                
-                botonAnimacion.textContent = "▶️ Ver Animación";
-                isAnimated = false;
-                mensajeDetalle.innerHTML = `🎨 ${currentCountry.nombre} - Modo Estático`;
+                action.setEffectiveTimeScale(this.data.timeScale);
+                action.play();
+                this.isPlaying = true;
+            },
+            
+            stopAnimation: function() {
+                if (!this.mixer) return;
+                this.actions.forEach(action => action.stop());
+                this.isPlaying = false;
+            },
+            
+            tick: function(time, delta) {
+                if (this.mixer && this.isPlaying) {
+                    const deltaSeconds = delta / 1000;
+                    this.mixer.update(deltaSeconds);
+                }
             }
         });
         
-        // Iniciar aplicación
-        initMindAR();
+        // ---- Lógica de control y alternancia entre estático / animado ----
+        const infoPanel = document.getElementById("info-panel");
+        const toggleBtn = document.getElementById("toggle-animation-btn");
+        let isAnimatedMode = false;     // false = estático (default), true = animado
+        let currentActiveCountry = null; // almacena el id del país activo (ej: 'argentina', 'australia', etc)
+        
+        // Mapeo de IDs de elementos target a nombre de país (clave única)
+        const targetToCountry = {
+            'target-argentina': 'argentina',
+            'target-australia': 'australia',
+            'target-brasil': 'brasil',
+            'target-canada': 'canada',
+            'target-corea': 'corea',
+            'target-uruguay': 'uruguay',
+            'target-usa': 'usa',
+            'target-francia': 'francia',
+            'target-japon': 'japon',
+            'target-colombia': 'colombia',
+            'target-mexico': 'mexico',
+            'target-inglaterra': 'inglaterra'
+        };
+        
+        // Configuración de cada país (prefijos para IDs de texto y modelos)
+        const countryConfig = {
+            argentina: { prefix: 'argentina', nombreMostrar: 'ARGENTINA' },
+            australia: { prefix: 'australia', nombreMostrar: 'AUSTRALIA' },
+            brasil: { prefix: 'brasil', nombreMostrar: 'BRASIL' },
+            canada: { prefix: 'canada', nombreMostrar: 'CANADÁ' },
+            corea: { prefix: 'corea', nombreMostrar: 'COREA DEL SUR' },
+            uruguay: { prefix: 'uruguay', nombreMostrar: 'URUGUAY' },
+            usa: { prefix: 'usa', nombreMostrar: 'ESTADOS UNIDOS' },
+            francia: { prefix: 'francia', nombreMostrar: 'FRANCIA' },
+            japon: { prefix: 'japon', nombreMostrar: 'JAPÓN' },
+            colombia: { prefix: 'colombia', nombreMostrar: 'COLOMBIA' },
+            mexico: { prefix: 'mexico', nombreMostrar: 'MÉXICO' },
+            inglaterra: { prefix: 'inglaterra', nombreMostrar: 'INGLATERRA' }
+        };
+        
+        // Función para ocultar todos los modelos y texto de un país específico
+        function hideCountryModels(countryId) {
+            const cfg = countryConfig[countryId];
+            if (!cfg) return;
+            const textoId = `texto-${cfg.prefix}`;
+            const estaticoId = `modelo-${cfg.prefix}-estatico`;
+            const animadoId = `modelo-${cfg.prefix}-animado`;
+            const textoEl = document.getElementById(textoId);
+            const estaticoEl = document.getElementById(estaticoId);
+            const animadoEl = document.getElementById(animadoId);
+            if (textoEl) textoEl.setAttribute('visible', 'false');
+            if (estaticoEl) estaticoEl.setAttribute('visible', 'false');
+            if (animadoEl) {
+                animadoEl.setAttribute('visible', 'false');
+                const animComp = animadoEl.components['custom-animation-mixer'];
+                if (animComp) animComp.stopAnimation();
+            }
+        }
+        
+        // Mostrar el país según el modo actual (estático o animado)
+        function showCountryByMode(countryId) {
+            const cfg = countryConfig[countryId];
+            if (!cfg) return;
+            const textoId = `texto-${cfg.prefix}`;
+            const estaticoId = `modelo-${cfg.prefix}-estatico`;
+            const animadoId = `modelo-${cfg.prefix}-animado`;
+            const textoEl = document.getElementById(textoId);
+            const estaticoEl = document.getElementById(estaticoId);
+            const animadoEl = document.getElementById(animadoId);
+            
+            if (textoEl) textoEl.setAttribute('visible', 'true');
+            
+            if (!isAnimatedMode) {
+                // Modo estático por defecto
+                if (estaticoEl) estaticoEl.setAttribute('visible', 'true');
+                if (animadoEl) {
+                    animadoEl.setAttribute('visible', 'false');
+                    const animComp = animadoEl.components['custom-animation-mixer'];
+                    if (animComp) animComp.stopAnimation();
+                }
+                toggleBtn.textContent = "🎬 Ver Animación";
+            } else {
+                // Modo animado
+                if (estaticoEl) estaticoEl.setAttribute('visible', 'false');
+                if (animadoEl) {
+                    animadoEl.setAttribute('visible', 'true');
+                    const animComp = animadoEl.components['custom-animation-mixer'];
+                    if (animComp && !animComp.isPlaying) {
+                        animComp.playAnimation();
+                    }
+                }
+                toggleBtn.textContent = "⏹️ Ver Estático";
+            }
+        }
+        
+        // Actualizar la interfaz cuando cambia el país activo o se pierde
+        function setActiveCountry(countryId) {
+            // Si ya hay un país activo y es diferente, ocultar el anterior
+            if (currentActiveCountry && currentActiveCountry !== countryId) {
+                hideCountryModels(currentActiveCountry);
+            }
+            currentActiveCountry = countryId;
+            if (countryId) {
+                showCountryByMode(countryId);
+                infoPanel.classList.add('hidden');
+                toggleBtn.style.display = "block";
+            } else {
+                infoPanel.classList.remove('hidden');
+                toggleBtn.style.display = "none";
+            }
+        }
+        
+        // Eventos para cada target: targetFound y targetLost
+        Object.keys(targetToCountry).forEach(targetId => {
+            const targetEl = document.getElementById(targetId);
+            if (!targetEl) return;
+            const country = targetToCountry[targetId];
+            
+            targetEl.addEventListener("targetFound", () => {
+                setActiveCountry(country);
+            });
+            
+            targetEl.addEventListener("targetLost", () => {
+                // Verificar si realmente ningún otro target está visible
+                // Usamos mindar-image para comprobar si hay algún target detectado
+                setTimeout(() => {
+                    const sceneEl = document.querySelector('a-scene');
+                    const mindarComp = sceneEl ? sceneEl.components['mindar-image'] : null;
+                    let anyFound = false;
+                    if (mindarComp && mindarComp.data) {
+                        // Revisar el estado de los targets (propiedad interna). 
+                        // Alternativa: verificar si algún target tiene evento reciente, por simplicidad comprobamos si el current sigue siendo el mismo y si se pierde y no hay otro targetFound activo 
+                        // Lo hacemos a través de una verificación de visibilidad rápida: si en 200ms no se detecta otro, limpiamos.
+                        // Pero como cada targetLost puede llamarse, usamos un timeout y verificamos si currentActiveCountry sigue siendo este país.
+                        if (currentActiveCountry === country) {
+                            // Esperamos breve y si ningún otro target ha tomado el relevo, limpiamos
+                            setTimeout(() => {
+                                // Verificar si algún target vinculado a otro país está encontrado (chequeo no trivial), mejor usar bandera global:
+                                let otherFound = false;
+                                for (let otherTargetId of Object.keys(targetToCountry)) {
+                                    if (otherTargetId !== targetId) {
+                                        const otherEl = document.getElementById(otherTargetId);
+                                        // Propiedad expuesta? No directa. Usamos una variable compartida. 
+                                        // Para simplicidad, confiamos en que si se pierde y no se activó otro en 200ms, limpiamos.
+                                    }
+                                }
+                                if (currentActiveCountry === country) {
+                                    // Si aún es este país sin que otro lo reemplazara, lo ocultamos.
+                                    hideCountryModels(country);
+                                    currentActiveCountry = null;
+                                    infoPanel.classList.remove('hidden');
+                                    toggleBtn.style.display = "none";
+                                    isAnimatedMode = false; // reset modo visual pero conservamos estado, al reaparecer vuelve a estático
+                                    // Sincronizar botón
+                                    toggleBtn.textContent = "🎬 Ver Animación";
+                                }
+                            }, 150);
+                        }
+                    } else {
+                        if (currentActiveCountry === country) {
+                            hideCountryModels(country);
+                            currentActiveCountry = null;
+                            infoPanel.classList.remove('hidden');
+                            toggleBtn.style.display = "none";
+                            isAnimatedMode = false;
+                            toggleBtn.textContent = "🎬 Ver Animación";
+                        }
+                    }
+                }, 100);
+            });
+        });
+        
+        // Función para manejar el botón toggle: alterna entre estático y animado para el país actual
+        toggleBtn.addEventListener("click", () => {
+            if (!currentActiveCountry) return;
+            // Alternar modo
+            isAnimatedMode = !isAnimatedMode;
+            // Actualizar visibilidad según nuevo modo
+            const cfg = countryConfig[currentActiveCountry];
+            if (cfg) {
+                const estaticoEl = document.getElementById(`modelo-${cfg.prefix}-estatico`);
+                const animadoEl = document.getElementById(`modelo-${cfg.prefix}-animado`);
+                if (!isAnimatedMode) {
+                    // Cambiar a estático
+                    if (estaticoEl) estaticoEl.setAttribute('visible', 'true');
+                    if (animadoEl) {
+                        animadoEl.setAttribute('visible', 'false');
+                        const animComp = animadoEl.components['custom-animation-mixer'];
+                        if (animComp) animComp.stopAnimation();
+                    }
+                    toggleBtn.textContent = "🎬 Ver Animación";
+                } else {
+                    // Cambiar a animado
+                    if (estaticoEl) estaticoEl.setAttribute('visible', 'false');
+                    if (animadoEl) {
+                        animadoEl.setAttribute('visible', 'true');
+                        const animComp = animadoEl.components['custom-animation-mixer'];
+                        if (animComp && !animComp.isPlaying) animComp.playAnimation();
+                    }
+                    toggleBtn.textContent = "⏹️ Ver Estático";
+                }
+            }
+        });
+        
+        // Inicialmente aseguramos que no haya nada mostrado
+        window.addEventListener('load', () => {
+            toggleBtn.style.display = "none";
+            infoPanel.classList.remove('hidden');
+            isAnimatedMode = false;
+        });
+        
+        // Manejo de errores de carga de assets (opcional)
+        console.log("AR Listo - escanea banderas en orden: Argentina, Australia, Brasil, Canadá, Corea del Sur, Uruguay, Estados Unidos, Francia, Japón, Colombia, México, Inglaterra");
     </script>
 </body>
 </html>
