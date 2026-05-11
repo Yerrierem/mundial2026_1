@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Realidad Aumentada - QR NV</title>
+    
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://unpkg.com/jsqr@1.4.0/dist/jsQR.js"></script>
+
+    <style>
+        /* Forzar que nada tenga fondo sólido */
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background-color: #0a3d0a !important;
+            background-image: 
+                linear-gradient(rgba(255, 140, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 140, 0, 0.1) 1px, transparent 1px) !important;
+            background-size: 40px 40px !important;
+        }
+
+        /* Interfaz de usuario (Capa superior) */
+        .ui-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+            padding: 20px 0;
+        }
+
+        /* Contenedor superior para mensajes */
+        .top-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        #pais-activo {
+            background: linear-gradient(to right, #FF8C00, #FFA500);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 10px;
+            box-shadow: 0 6px 0 #cc7000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid #0a3d0a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #pais-activo::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.7s;
+        }
+
+        #pais-activo:hover::before {
+            left: 100%;
+        }
+
+        /* Contenedor inferior para mensajes y botones */
+        .bottom-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            padding-bottom: 30px;
+            pointer-events: none;
+        }
+
+        .instrucciones, .qr-mensaje {
+            pointer-events: none;
+            color: white;
+            background: linear-gradient(135deg, #0a3d0a, #1e6b1e);
+            padding: 15px 25px;
+            border-radius: 50px;
+            text-align: center;
+            max-width: 280px;
+            border: 3px solid #FF8C00;
+            box-shadow: 0 6px 0 #063106;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .instrucciones::before, .qr-mensaje::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
+            transition: left 0.7s;
+            pointer-events: none;
+        }
+
+        .instrucciones:hover::before, .qr-mensaje:hover::before {
+            left: 100%;
+        }
+
+        #boton-animacion {
+            pointer-events: auto;
+            padding: 16px 32px;
+            background: linear-gradient(to right, #0a3d0a, #1e6b1e);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 0 #063106;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #FF8C00;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        #boton-animacion::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 140, 0, 0.4), transparent);
+            transition: left 0.7s;
+        }
+
+        #boton-animacion:hover {
+            background: linear-gradient(to right, #1e6b1e, #0a3d0a);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 9px 0 #063106;
+        }
+
+        #boton-animacion:hover::before {
+            left: 100%;
+        }
+
+        #boton-animacion:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #063106;
+        }
+
+        /* Botón de volver al inicio */
+        #boton-volver {
+            pointer-events: auto;
+            padding: 12px 24px;
+            background: linear-gradient(to right, #FF8C00, #FFA500);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 6px 0 #cc7000;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #0a3d0a;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 180px;
+            text-align: center;
+        }
+
+        #boton-volver::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.7s;
+        }
+
+        #boton-volver:hover {
+            background: linear-gradient(to right, #FFA500, #FF8C00);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 9px 0 #cc7000;
+        }
+
+        #boton-volver:hover::before {
+            left: 100%;
+        }
+
+        #boton-volver:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #cc7000;
+        }
+
+        /* Video de escaneo (invisible) */
+        #qr-video { display: none; }
+
+        /* Animaciones */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .qr-mensaje {
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        /* Decoración adicional para la UI */
+        .ui-container::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: repeating-linear-gradient(
+                90deg,
+                #0a3d0a,
+                #0a3d0a 20px,
+                #FF8C00 20px,
+                #FF8C00 40px
+            );
+            z-index: 11;
+            pointer-events: none;
+        }
+
+        .ui-container::after {
+            content: "";
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: repeating-linear-gradient(
+                90deg,
+                #FF8C00,
+                #FF8C00 20px,
+                #0a3d0a 20px,
+                #0a3d0a 40px
+            );
+            z-index: 11;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ui-container">
+        <!-- Contenedor superior para mensajes (solo país activo) -->
+        <div class="top-container">
+            <div id="pais-activo" style="display: none;"></div>
+        </div>
+        
+        <!-- Contenedor inferior para mensajes y botones -->
+        <div class="bottom-container">
+            <div class="instrucciones" id="instrucciones">📱 Enfoca un código QR de país</div>
+            <div class="qr-mensaje" id="qr-mensaje" style="display: none;">Escaneando...</div>
+            <button id="boton-animacion" style="display: none;">▶️ Ver Animación</button>
+            <a href="index.html" id="boton-volver">⬅️ Volver al Inicio</a>
+        </div>
+    </div>
+
+    <video id="qr-video" playsinline></video>
+
+    <a-scene
+        embedded
+        arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+        renderer="alpha: true; colorManagement: true;"
+        vr-mode-ui="enabled: false">
+        
+        <a-assets>
+            <a-asset-item id="modeloMexicoEstatico" src="./assets/Mexico.glb"></a-asset-item>
+            <a-asset-item id="modeloEstadosUnidosEstatico" src="./assets/EstadosUnidos.glb"></a-asset-item>
+            <a-asset-item id="modeloCanadaEstatico" src="./assets/Canada.glb"></a-asset-item>
+            <a-asset-item id="modeloBrasilEstatico" src="./assets/Brasil.glb"></a-asset-item>
+            <a-asset-item id="modeloUruguayEstatico" src="./assets/Uruguay.glb"></a-asset-item>
+            <a-asset-item id="modeloColombiaEstatico" src="./assets/Colombia.glb"></a-asset-item>
+            <a-asset-item id="modeloFranciaEstatico" src="./assets/Francia.glb"></a-asset-item>
+            <a-asset-item id="modeloInglaterraEstatico" src="./assets/Inglaterra.glb"></a-asset-item>
+            <a-asset-item id="modeloCoreaSurEstatico" src="./assets/CoreaSur.glb"></a-asset-item>
+            <a-asset-item id="modeloJaponEstatico" src="./assets/Japon.glb"></a-asset-item>
+            <a-asset-item id="modeloAustraliaEstatico" src="./assets/Australia.glb"></a-asset-item>
+            <a-asset-item id="modeloArgentinaEstatico" src="./assets/Argentina.glb"></a-asset-item>
+
+            <a-asset-item id="modeloMexicoAnimado" src="./assets/MexicoA.glb"></a-asset-item>
+            <a-asset-item id="modeloEstadosUnidosAnimado" src="./assets/EstadosUnidosA.glb"></a-asset-item>
+            <a-asset-item id="modeloCanadaAnimado" src="./assets/CanadaA.glb"></a-asset-item>
+            <a-asset-item id="modeloBrasilAnimado" src="./assets/BrasilA.glb"></a-asset-item>
+            <a-asset-item id="modeloUruguayAnimado" src="./assets/UruguayA.glb"></a-asset-item>
+            <a-asset-item id="modeloColombiaAnimado" src="./assets/ColombiaA.glb"></a-asset-item>
+            <a-asset-item id="modeloFranciaAnimado" src="./assets/FranciaA.glb"></a-asset-item>
+            <a-asset-item id="modeloInglaterraAnimado" src="./assets/InglaterraA.glb"></a-asset-item>
+            <a-asset-item id="modeloCoreaSurAnimado" src="./assets/CoreaSurA.glb"></a-asset-item>
+            <a-asset-item id="modeloJaponAnimado" src="./assets/JaponA.glb"></a-asset-item>
+            <a-asset-item id="modeloAustraliaAnimado" src="./assets/AustraliaA.glb"></a-asset-item>
+            <a-asset-item id="modeloArgentinaAnimado" src="./assets/ArgentinaA.glb"></a-asset-item>
+        </a-assets>
+
+        <a-entity camera></a-entity>
+
+        <a-entity light="type: ambient; intensity: 0.9"></a-entity>
+        <a-entity light="type: directional; intensity: 0.7" position="0 1 1"></a-entity>
+
+        <a-entity id="contenedor-modelos" position="0 0 -3"></a-entity>
+    </a-scene>
+
+    <script>
+        // --- COMPONENTE DE ANIMACIÓN---
+        AFRAME.registerComponent('custom-animation-mixer', {
+            schema: {
+                clipIndex: { type: 'int', default: 0 },
+                autoPlay: { type: 'boolean', default: true },
+                loop: { type: 'boolean', default: true },
+                timeScale: { type: 'number', default: 1 }
+            },
+            init: function() {
+                this.mixer = null;
+                this.actions = [];
+                this.el.addEventListener('model-loaded', (e) => {
+                    this.setupAnimations(e.detail.model);
+                });
+            },
+            setupAnimations: function(model) {
+                this.mixer = new THREE.AnimationMixer(model);
+                model.animations.forEach((clip) => {
+                    const action = this.mixer.clipAction(clip);
+                    this.actions.push(action);
+                });
+                if (this.data.autoPlay && this.actions.length > 0) this.playAnimation();
+            },
+            playAnimation: function(index = 0) {
+                if (!this.mixer || !this.actions[index]) return;
+                this.stopAnimation();
+                const action = this.actions[index];
+                action.setLoop(this.data.loop ? THREE.LoopRepeat : THREE.LoopOnce, Infinity);
+                action.play();
+                this.isPlaying = true;
+            },
+            stopAnimation: function() {
+                if (this.mixer) this.actions.forEach(a => a.stop());
+                this.isPlaying = false;
+            },
+            tick: function(t, dt) {
+                if (this.mixer && this.isPlaying) this.mixer.update(dt / 1000);
+            }
+        });
+
+        // --- LÓGICA DE DATOS ---
+        const paises = [
+            { id: 'mexico', nombre: '', qrText: 'MEXICO', modeloEstatico: '#modeloMexicoEstatico', modeloAnimado: '#modeloMexicoAnimado', color: '#CE1126' },
+            { id: 'estadosunidos', nombre: '', qrText: 'ESTADOSUNIDOS', modeloEstatico: '#modeloEstadosUnidosEstatico', modeloAnimado: '#modeloEstadosUnidosAnimado', color: '#B22234' },
+            { id: 'canada', nombre: '', qrText: 'CANADA', modeloEstatico: '#modeloCanadaEstatico', modeloAnimado: '#modeloCanadaAnimado', color: '#FF0000' },
+            { id: 'brasil', nombre: '', qrText: 'BRASIL', modeloEstatico: '#modeloBrasilEstatico', modeloAnimado: '#modeloBrasilAnimado', color: '#009C3B' },
+            { id: 'uruguay', nombre: '', qrText: 'URUGUAY', modeloEstatico: '#modeloUruguayEstatico', modeloAnimado: '#modeloUruguayAnimado', color: '#0038A8' },
+            { id: 'colombia', nombre: '', qrText: 'COLOMBIA', modeloEstatico: '#modeloColombiaEstatico', modeloAnimado: '#modeloColombiaAnimado', color: '#FCD116' },
+            { id: 'francia', nombre: '', qrText: 'FRANCIA', modeloEstatico: '#modeloFranciaEstatico', modeloAnimado: '#modeloFranciaAnimado', color: '#0055A4' },
+            { id: 'inglaterra', nombre: '', qrText: 'INGLATERRA', modeloEstatico: '#modeloInglaterraEstatico', modeloAnimado: '#modeloInglaterraAnimado', color: '#CE1124' },
+            { id: 'coreasur', nombre: '', qrText: 'COREASUR', modeloEstatico: '#modeloCoreaSurEstatico', modeloAnimado: '#modeloCoreaSurAnimado', color: '#0047A0' },
+            { id: 'japon', nombre: '', qrText: 'JAPON', modeloEstatico: '#modeloJaponEstatico', modeloAnimado: '#modeloJaponAnimado', color: '#BC002D' },
+            { id: 'australia', nombre: '', qrText: 'AUSTRALIA', modeloEstatico: '#modeloAustraliaEstatico', modeloAnimado: '#modeloAustraliaAnimado', color: '#00008B' },
+            { id: 'argentina', nombre: '', qrText: 'ARGENTINA', modeloEstatico: '#modeloArgentinaEstatico', modeloAnimado: '#modeloArgentinaAnimado', color: '#75AADB' }
+        ];
+
+        // Elementos DOM
+        const instrucciones = document.getElementById("instrucciones");
+        const qrMensaje = document.getElementById("qr-mensaje");
+        const botonAnimacion = document.getElementById("boton-animacion");
+        const paisActivo = document.getElementById("pais-activo");
+        const qrVideo = document.getElementById("qr-video");
+        const contenedorModelos = document.getElementById("contenedor-modelos");
+        const botonVolver = document.getElementById("boton-volver");
+
+        let modeloEstaticoActual = null, modeloAnimadoActual = null, isAnimated = false, paisActual = null;
+        let ultimoQRScaneado = "", tiempoUltimoQR = 0;
+
+        // --- MOSTRAR PAÍS  ---
+        function mostrarPais(pais) {
+            while (contenedorModelos.firstChild) { contenedorModelos.removeChild(contenedorModelos.firstChild); }
+            paisActual = pais;
+
+            // Texto flotante
+            const texto = document.createElement('a-text');
+            texto.setAttribute('value', pais.nombre);
+            texto.setAttribute('color', pais.color);
+            texto.setAttribute('align', 'center');
+            texto.setAttribute('position', '0 1.2 0');
+            texto.setAttribute('scale', '2 2 2');
+            contenedorModelos.appendChild(texto);
+
+            // Modelo Estático
+            modeloEstaticoActual = document.createElement('a-gltf-model');
+            modeloEstaticoActual.setAttribute('src', pais.modeloEstatico);
+            modeloEstaticoActual.setAttribute('scale', '1.0 1.0 1.0'); 
+            modeloEstaticoActual.setAttribute('position', '0 -1 0');
+            contenedorModelos.appendChild(modeloEstaticoActual);
+
+            // Modelo Animado
+            modeloAnimadoActual = document.createElement('a-entity');
+            modeloAnimadoActual.setAttribute('gltf-model', pais.modeloAnimado);
+            modeloAnimadoActual.setAttribute('custom-animation-mixer', 'autoPlay: false');
+            modeloAnimadoActual.setAttribute('scale', '1.0 1.0 1.0');
+            modeloAnimadoActual.setAttribute('position', '0 -1 0');
+            modeloAnimadoActual.setAttribute('visible', 'false');
+            contenedorModelos.appendChild(modeloAnimadoActual);
+
+            // UI
+            botonAnimacion.style.display = 'block';
+            paisActivo.style.display = 'block';
+            paisActivo.innerHTML = `📍 ${pais.nombre}`;
+            instrucciones.style.display = 'none';
+            qrMensaje.style.display = 'block';
+            qrMensaje.innerHTML = `✅ ${pais.nombre}`;
+            isAnimated = false;
+            botonAnimacion.textContent = '▶️ Ver Animación';
+        }
+
+        // --- ESCANEO CONTINUO ---
+        async function iniciarCamara() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                qrVideo.srcObject = stream;
+                qrVideo.play();
+                requestAnimationFrame(scanQR);
+            } catch (err) { 
+                alert("Error al acceder a la cámara: " + err); 
+            }
+        }
+
+        function scanQR() {
+            if (qrVideo.readyState === qrVideo.HAVE_ENOUGH_DATA) {
+                const canvas = document.createElement("canvas");
+                canvas.width = qrVideo.videoWidth; 
+                canvas.height = qrVideo.videoHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(qrVideo, 0, 0, canvas.width, canvas.height);
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, canvas.width, canvas.height);
+
+                if (code) {
+                    const qrText = code.data.trim().toUpperCase();
+                    const ahora = Date.now();
+                    if (qrText !== ultimoQRScaneado || ahora - tiempoUltimoQR > 3000) {
+                        ultimoQRScaneado = qrText;
+                        tiempoUltimoQR = ahora;
+                        const encontrado = paises.find(p => p.qrText.toUpperCase() === qrText);
+                        if (encontrado && (!paisActual || paisActual.id !== encontrado.id)) {
+                            mostrarPais(encontrado);
+                        }
+                    }
+                }
+            }
+            requestAnimationFrame(scanQR);
+        }
+
+        // Botón Animación
+        botonAnimacion.addEventListener("click", () => {
+            if (isAnimated) {
+                modeloAnimadoActual.setAttribute('visible', 'false');
+                if (modeloAnimadoActual.components['custom-animation-mixer']) {
+                    modeloAnimadoActual.components['custom-animation-mixer'].stopAnimation();
+                }
+                modeloEstaticoActual.setAttribute('visible', 'true');
+                botonAnimacion.textContent = '▶️ Ver Animación';
+            } else {
+                modeloEstaticoActual.setAttribute('visible', 'false');
+                modeloAnimadoActual.setAttribute('visible', 'true');
+                if (modeloAnimadoActual.components['custom-animation-mixer']) {
+                    modeloAnimadoActual.components['custom-animation-mixer'].playAnimation();
+                }
+                botonAnimacion.textContent = '⏹️ Ver Estático';
+            }
+            isAnimated = !isAnimated;
+        });
+
+        window.onload = iniciarCamara;
+    </script>
+</body>
+</html>
